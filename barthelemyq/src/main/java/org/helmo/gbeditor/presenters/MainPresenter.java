@@ -92,7 +92,7 @@ public class MainPresenter implements MainPresenterInterface {
 	@Override
 	public void createBook(String title, String summary, String author, String isbn) {
 		try {
-			Book book = new Book(title, summary, author, new Isbn(isbn));
+			Book book = new Book(title, summary, author, new Isbn(isbn), null);
 			repository.saveBook(book);
 			view.switchPane(0);
 		} catch (BookNotValidException|IsbnNotValidException e) {

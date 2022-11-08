@@ -1,6 +1,10 @@
 package org.helmo.gbeditor.infrastructures.dto;
 
 import com.google.gson.annotations.SerializedName;
+import org.helmo.gbeditor.models.Page;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe DTO Book
@@ -19,6 +23,9 @@ public class BookDTO {
     @SerializedName("Isbn")
     public final String isbn;
 
+    @SerializedName("Pages")
+    public final List<PageDTO> pages;
+
     /**
      * Constructeur livre DTO
      * @param title (String) titre
@@ -26,11 +33,12 @@ public class BookDTO {
      * @param author (String) auteur
      * @param isbn (String) numéro isbn
      */
-    public BookDTO(String title, String summary, String author, String isbn) {
+    public BookDTO(String title, String summary, String author, String isbn, List<PageDTO> pages) {
         this.title = title;
         this.summary = summary;
         this.author = author;
         this.isbn = isbn;
+        this.pages = (pages == null || pages.isEmpty()) ? new ArrayList<>() : new ArrayList<>(pages);
     }
 
     /**
@@ -63,6 +71,14 @@ public class BookDTO {
      */
     public String getIsbn() {
         return isbn;
+    }
+
+    /**
+     * Récupère la liste des pages
+     * @return (List<Page>) liste des pages
+     */
+    public List<PageDTO> getPages() {
+        return pages;
     }
 
 }

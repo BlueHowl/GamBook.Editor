@@ -2,12 +2,11 @@ package org.helmo.gbeditor;
 
 import org.helmo.gbeditor.infrastructures.jdbc.SqlStorage;
 import org.helmo.gbeditor.infrastructures.jdbc.SqlStorageFactory;
-import org.helmo.gbeditor.infrastructures.jdbc.UnableToTearDownException;
+import org.helmo.gbeditor.infrastructures.jdbc.exceptions.UnableToTearDownException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DBRepositoryTest {

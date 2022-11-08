@@ -43,11 +43,11 @@ public class JsonRepository implements DataInterface {
 
     /**
      * Défini le nom du fichier de sauvegarde (ici : matricule auteur)
-     * @param name (String) nom du fichier
+     * @param id (String) nom du fichier
      */
     @Override
-    public void setFileName(String name) {
-        jsonBooksPath = Path.of(System.getProperty("user.home"), "ue36", name + ".json").toAbsolutePath().toString();
+    public void setUserId(String id) {
+        jsonBooksPath = Path.of(System.getProperty("user.home"), "ue36", id + ".json").toAbsolutePath().toString();
     }
 
     /**
@@ -68,6 +68,11 @@ public class JsonRepository implements DataInterface {
         }
 
         setAllBooks(books);
+    }
+
+    @Override
+    public List<Book> getBooks() throws IOException {
+        return null;
     }
 
     /**

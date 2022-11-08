@@ -78,7 +78,7 @@ public class JsonRepositoryTest {
     @Test
     public void saveBookTest() {
         try {
-            Book book = new Book("titre", "description", "auteur", new Isbn("2-111111-04-x"));
+            Book book = new Book("titre", "description", "auteur", new Isbn("2-111111-04-x"), null);
 
             jsonRepository.saveBook(book);
 

@@ -3,6 +3,7 @@ package org.helmo.gbeditor.models;
 import org.helmo.gbeditor.customexceptions.BookNotValidException;
 import org.helmo.gbeditor.utils.InputUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class Book {
      * @param isbn (Isbn) numéro isbn unique du livre
      * @throws BookNotValidException si les données du livre récupéré sont incorrectes
      */
-    public Book(String title, String summary, String author, Isbn isbn) throws BookNotValidException {
+    public Book(String title, String summary, String author, Isbn isbn, List<Page> pages) throws BookNotValidException {
         if(InputUtil.isEmptyOrBlank(title) ||
             InputUtil.isEmptyOrBlank(summary) ||
             InputUtil.isEmptyOrBlank(author))
@@ -48,6 +49,7 @@ public class Book {
         this.summary = summary.trim();
         this.author = author;
         this.isbn = isbn;
+        this.pages = (pages == null || pages.isEmpty()) ? new ArrayList<>() : new ArrayList<>(pages);
     }
 
     /**
@@ -80,6 +82,14 @@ public class Book {
      */
     public String getIsbn() {
         return isbn.getIsbn();
+    }
+
+    /**
+     * Récupère la liste des pages
+     * @return (List<Page>) liste des pages
+     */
+    public List<Page> getPages() {
+        return pages;
     }
 
 }

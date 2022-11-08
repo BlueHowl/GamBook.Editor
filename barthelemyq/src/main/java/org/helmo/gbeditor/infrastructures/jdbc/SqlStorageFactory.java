@@ -1,6 +1,9 @@
 package org.helmo.gbeditor.infrastructures.jdbc;
 
 
+import org.helmo.gbeditor.infrastructures.jdbc.exceptions.ConnectionFailedException;
+import org.helmo.gbeditor.infrastructures.jdbc.exceptions.JdbcDriverNotFoundException;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
 

@@ -45,7 +45,7 @@ public class LoginPresenter implements LoginPresenterInterface {
         try {
             Author author = new Author(id, surname, name);
 
-            repository.setFileName(author.getId());
+            repository.setUserId(author.getId());
             mainPresenter.showView(author);
         } catch (AuthorNotValidException e) {
             view.displayMessage(e.getMessage());

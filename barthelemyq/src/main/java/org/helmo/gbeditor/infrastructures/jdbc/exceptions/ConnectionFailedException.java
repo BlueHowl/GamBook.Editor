@@ -1,4 +1,4 @@
-package org.helmo.gbeditor.infrastructures.jdbc;
+package org.helmo.gbeditor.infrastructures.jdbc.exceptions;
 
 
 public class ConnectionFailedException extends RuntimeException {
