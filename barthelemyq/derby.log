@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Nov 07 21:21:29 CET 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0184-53c1-50a6-00000e900000 
+on database directory C:\Users\ImJus\OneDrive\Bureau\bloc2\AI\GBEditorBarthelemyQ\barthelemyq\derbyTest with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@5c7fa833 
+Loaded from file:/C:/Users/ImJus/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.14.2.0/7efad40ef52fbb1f08142f07a83b42d29e47d8ce/derby-10.14.2.0.jar
+java.vendor=Amazon.com Inc.
+java.runtime.version=11.0.17+8-LTS
+user.dir=C:\Users\ImJus\OneDrive\Bureau\bloc2\AI\GBEditorBarthelemyQ\barthelemyq
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

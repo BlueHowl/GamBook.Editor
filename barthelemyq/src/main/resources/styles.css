@@ -1,0 +1,44 @@
+/* login view */
+.title {
+    -fx-font-family:"Arial", sans-serif;
+    -fx-font-size: 32px;
+
+    -fx-vgap: 10px;
+
+}
+
+.login-boxes {
+    -fx-font-size: 12px;
+    -fx-padding: 8px;
+}
+
+.auth-box {
+    -fx-padding: 14px;
+}
+
+.auth-button {
+    -fx-font-size: 14px;
+
+    -fx-pref-width: 200px;
+    -fx-padding: 4px;
+}
+
+/* main view */
+.top-box {
+    -fx-border-color: black;
+    -fx-border-width: 0 0 2px 0;
+}
+
+.user-info-text {
+    -fx-font-size: 11px;
+    -fx-padding: 3px 8px 3px 0;
+}
+
+/* utility */
+.wrap-text {
+	-fx-wrap-text: true;
+}
+
+.error-message {
+    -fx-text-fill: red;
+}
