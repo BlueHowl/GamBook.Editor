@@ -1,4 +1,4 @@
-package org.helmo.gbeditor.views;
+package org.helmo.gbeditor.views.subviews;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,19 +14,14 @@ import javafx.util.Callback;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
 import org.helmo.gbeditor.presenters.viewmodels.BookViewModel;
 
+import java.util.List;
+
 /**
  * Vue Description Livre
  */
 public class BookListView extends BorderPane {
 
     private MainPresenterInterface presenter;
-
-    public BookListView(MainPresenterInterface presenter) {
-        this.presenter = presenter;
-
-        this.setLeft(container);
-        this.setCenter(bookDescriptionPane);
-    }
 
     private BorderPane editableTitleBox = new BorderPane(); {
         Label title = new Label("Modifier le livre");
@@ -127,26 +122,29 @@ public class BookListView extends BorderPane {
         editableAuthorBox.getStyleClass().add("");
     }
 
-    private BorderPane editableCreateBtnBox = new BorderPane(); {
-        Button loginButton = new Button("Modifier le livre"); {
-            loginButton.setOnAction(action -> presenter.createBook(editableBookTitle.getText(), editableSummary.getText(), editableAuthor.getText(), editableIsbn.getText() + editableIsbnVerif.getText()));
+    private HBox editableBtnBox = new HBox(); {
+        Button modifyButton = new Button("Modifier le livre"); {
+            modifyButton.setOnAction(action -> presenter.createUpdateBook(editableBookTitle.getText(), editableSummary.getText(), editableAuthor.getText(), editableIsbn.getText() + editableIsbnVerif.getText()));
 
-            loginButton.getStyleClass().add("");
+            modifyButton.getStyleClass().add("");
         }
 
-        editableCreateBtnBox.setCenter(loginButton);
+        Button gestionButton = new Button("Gérer les pages et choix"); {
+            gestionButton.setOnAction(action -> presenter.switchPane(2));
 
-        editableCreateBtnBox.getStyleClass().add("auth-box");
+            gestionButton.getStyleClass().add("");
+        }
+
+        editableBtnBox.getChildren().add(modifyButton);
+        editableBtnBox.getChildren().add(gestionButton);
+
+        editableBtnBox.getStyleClass().add("auth-box");
     }
 
     //Book list
 
     private ListView<BookViewModel> list = new ListView<BookViewModel>();
-    private ObservableList<BookViewModel> data = FXCollections.observableArrayList(
-            new BookViewModel("titrelongggggthgggggggggeeefrgerg", "description", "auteur aaa", "1-222222-55-x"),
-            new BookViewModel("titre2", "description22", "auteur aaa22", "1-333333-11-x"),
-            new BookViewModel("titre33", "description32", "auteur a3332", "1-444444-11-7")
-    );
+    private ObservableList<BookViewModel> data = FXCollections.observableArrayList();
 
     private static class LabelCell extends ListCell<BookViewModel> {
         @Override
@@ -154,8 +152,9 @@ public class BookListView extends BorderPane {
             super.updateItem(item, empty);
             if (item != null) {//limite titre 15 premiers caracteres
                 VBox box = new VBox(); {
-                    Label title = new Label("Titre : " + item.getTitle().substring(0, Math.min(item.getTitle().length(), 15)));
-                    Label infos = new Label("Auteur : " + item.getAuthor() + "Isbn : " + item.getIsbn());
+                    String titleString = item.getTitle();
+                    Label title = new Label("Titre : " + titleString.substring(0, Math.min(titleString.length(), 15)) + ((titleString.length() > 14) ? "..." : "")); //TODO CHECK length > 14
+                    Label infos = new Label("Auteur : " + item.getAuthor() + ", Isbn : " + item.getIsbn());
 
                     box.getChildren().add(title);
                     box.getChildren().add(infos);
@@ -167,7 +166,6 @@ public class BookListView extends BorderPane {
     }
 
     private HBox container = new HBox(); {
-        container.setMinWidth(400);
         list.setItems(data);
 
         container.getChildren().addAll(list);
@@ -185,7 +183,10 @@ public class BookListView extends BorderPane {
         new ChangeListener<BookViewModel>() {
             @Override
             public void changed(ObservableValue<? extends BookViewModel> observable, BookViewModel oldValue, BookViewModel newValue) {
-                setBookDescription(newValue);
+                if(presenter != null && newValue != null) { //TODO do smth with presenter ?
+                    setBookDetails(newValue);
+                    presenter.setCurrentBook(data.indexOf(newValue));
+                }
             }
         });
 
@@ -199,16 +200,38 @@ public class BookListView extends BorderPane {
         bookDescriptionPane.add(editableSummaryBox, 0, 3);
         bookDescriptionPane.add(editableAuthorBox, 0, 4);
 
-        bookDescriptionPane.add(editableCreateBtnBox, 0, 5);
+        bookDescriptionPane.add(editableBtnBox, 0, 5);
 
         bookDescriptionPane.setAlignment(Pos.CENTER);
+    }
+
+    /**
+     * Constructeur de la sous vue
+     * @param presenter (MainPresenterInterface)
+     */
+    public BookListView(MainPresenterInterface presenter) {
+        this.presenter = presenter;
+
+        this.setLeft(container);
+        this.setCenter(bookDescriptionPane);
+
+        this.setVisible(false);
+    }
+
+    /**
+     * Défini la liste de livres
+     * affiche les livres de l'auteur
+     * @param bookViewModelList (List<BookViewModel>) list de livres à afficher
+     */
+    public void setBookListView(List<BookViewModel> bookViewModelList) {
+        data.setAll(bookViewModelList);
     }
 
     /**
      * Affiche les informations du livre donné dans l'onglet de description et modification du livre
      * @param book (BookViewModel) livre à afficher
      */
-    public void setBookDescription(BookViewModel book) {
+    public void setBookDetails(BookViewModel book) {
         editableBookTitle.setText(book.getTitle());
         editableSummary.setText(book.getSummary());
         editableAuthor.setText(book.getAuthor());

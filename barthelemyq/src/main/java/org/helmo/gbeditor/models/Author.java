@@ -1,7 +1,7 @@
 package org.helmo.gbeditor.models;
 
-import org.helmo.gbeditor.customexceptions.AuthorNotValidException;
-import org.helmo.gbeditor.utils.InputUtil;
+import org.helmo.gbeditor.models.exceptions.AuthorNotValidException;
+import org.helmo.gbeditor.models.utils.InputUtil;
 
 /**
  * Classe auteur

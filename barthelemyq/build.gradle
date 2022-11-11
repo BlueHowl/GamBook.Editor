@@ -31,6 +31,7 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.20.2'
     //Use derby as test database
     testImplementation 'org.apache.derby:derby:10.14.2.0'
+    testImplementation 'org.mockito:mockito-core:2.21.0'
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1-jre'
@@ -38,7 +39,9 @@ dependencies {
     implementation 'org.apache.commons:commons-text:1.9'
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.25'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6' //todo useful?
+
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
     //Gson
     implementation 'com.google.code.gson:gson:2.8.6'
 }

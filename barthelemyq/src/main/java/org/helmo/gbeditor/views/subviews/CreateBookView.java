@@ -1,4 +1,4 @@
-package org.helmo.gbeditor.views;
+package org.helmo.gbeditor.views.subviews;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -16,22 +16,6 @@ import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterfac
 public class CreateBookView extends GridPane {
 
     private MainPresenterInterface presenter;
-
-    public CreateBookView(MainPresenterInterface presenter) {
-        this.presenter = presenter;
-
-        this.add(titleBox, 0, 0);
-        this.add(bookTitleBox, 0, 1);
-        this.add(isbnBox, 0, 2);
-        this.add(summaryBox, 0, 3);
-        this.add(authorBox, 0, 4);
-
-        this.add(createBtnBox, 0, 5);
-
-        this.setAlignment(Pos.CENTER);
-
-        this.setVisible(false);
-    }
 
     private BorderPane titleBox = new BorderPane(); {
         Label title = new Label("Créer un livre");
@@ -129,15 +113,56 @@ public class CreateBookView extends GridPane {
     }
 
     private BorderPane createBtnBox = new BorderPane(); {
-        Button loginButton = new Button("Créer le livre"); {
-            loginButton.setOnAction(action -> presenter.createBook(bookTitle.getText(), summary.getText(), author.getText(), isbn.getText() + isbnVerif.getText()));
+        Button createButton = new Button("Créer le livre"); {
+            createButton.setOnAction(action -> presenter.createUpdateBook(bookTitle.getText(), summary.getText(), author.getText(), isbn.getText() + isbnVerif.getText()));
 
-            loginButton.getStyleClass().add("");
+            createButton.getStyleClass().add("");
         }
 
-        createBtnBox.setCenter(loginButton);
+        createBtnBox.setCenter(createButton);
 
         createBtnBox.getStyleClass().add("auth-box");
+    }
+
+    /**
+     * Constructeur de la sous vue
+     * @param presenter (MainPresenterInterface)
+     */
+    public CreateBookView(MainPresenterInterface presenter) {
+        this.presenter = presenter;
+
+        this.add(titleBox, 0, 0);
+        this.add(bookTitleBox, 0, 1);
+        this.add(isbnBox, 0, 2);
+        this.add(summaryBox, 0, 3);
+        this.add(authorBox, 0, 4);
+
+        this.add(createBtnBox, 0, 5);
+
+        this.setAlignment(Pos.CENTER);
+
+        this.setVisible(false);
+    }
+
+    /**
+     * initialise les champs de la vue
+     */
+    public void initializeFields() {
+        bookTitle.clear();
+        summary.clear();
+
+        String isbnNumber = presenter.generateIsbn();
+        isbn.setText(isbnNumber.substring(0, isbnNumber.length()-2));
+        isbnVerif.setText(isbnNumber.substring(isbnNumber.length()-2));
+    }
+
+    /**
+     * initialise le champs auteur
+     * opération séparée car champs invariable
+     * @param author (String) nom et prénom de l'auteur
+     */
+    public void setAuthor(String author) {
+        this.author.setText(author);
     }
 
 }

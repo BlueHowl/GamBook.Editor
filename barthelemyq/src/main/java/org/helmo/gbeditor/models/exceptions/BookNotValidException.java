@@ -1,4 +1,4 @@
-package org.helmo.gbeditor.customexceptions;
+package org.helmo.gbeditor.models.exceptions;
 
 /**
  * Exception livre invalide

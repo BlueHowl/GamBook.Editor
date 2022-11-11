@@ -5,14 +5,14 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.helmo.gbeditor.presenters.interfaces.presenters.LoginPresenterInterface;
-import org.helmo.gbeditor.presenters.interfaces.views.LoginViewInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.ViewInterface;
 
 /**
  * Vue
  * @author Quentin Barthélemy Q210043
  * @version 1.0
  */
-public class LoginView implements LoginViewInterface {
+public class LoginView implements ViewInterface {
     private LoginPresenterInterface presenter;
 
     private Label message = new Label(); {
@@ -111,6 +111,12 @@ public class LoginView implements LoginViewInterface {
         mainPane.setCenter(loginPane);
     }
 
+    public LoginView(LoginPresenterInterface presenter) {
+        this.presenter = presenter;
+
+        presenter.setView(this);
+    }
+
 
     /**
      * Retourne le scenegraph
@@ -118,16 +124,6 @@ public class LoginView implements LoginViewInterface {
      */
     public Parent getRoot() {
         return mainPane;
-    }
-
-    /**
-     * Renseigne un presenter à la vue
-     * @param presenter (LoginPresenterInterface)
-     */
-    @Override
-    public void setPresenter(LoginPresenterInterface presenter) {
-        this.presenter = presenter;
-
     }
 
     /**

@@ -1,12 +1,11 @@
 package org.helmo.gbeditor.presenters;
 
-import org.helmo.gbeditor.customexceptions.AuthorNotValidException;
+import org.helmo.gbeditor.models.exceptions.AuthorNotValidException;
 import org.helmo.gbeditor.models.*;
 import org.helmo.gbeditor.presenters.interfaces.presenters.LoginPresenterInterface;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
-import org.helmo.gbeditor.presenters.interfaces.views.LoginViewInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.ViewInterface;
 import org.helmo.gbeditor.repositories.DataInterface;
-import org.helmo.gbeditor.utils.InputUtil;
 
 /**
  * Présentateur Login
@@ -15,7 +14,7 @@ import org.helmo.gbeditor.utils.InputUtil;
  */
 public class LoginPresenter implements LoginPresenterInterface {
 
-    private LoginViewInterface view;
+    private ViewInterface view;
 
     private MainPresenterInterface mainPresenter;
 
@@ -23,13 +22,10 @@ public class LoginPresenter implements LoginPresenterInterface {
 
     /**
      * Constructeur du présentateur
-     * @param view (ViewInterface) Vue
+     * @param repository (DataInterface)
+     * @param mainPresenter (MainPresenterInterface) presentateur principal
      */
-    public LoginPresenter(LoginViewInterface view, DataInterface repository, MainPresenterInterface mainPresenter) {
-        //this.editor = editor;
-        this.view = view;
-        view.setPresenter(this);
-
+    public LoginPresenter(DataInterface repository, MainPresenterInterface mainPresenter) {
         this.repository = repository;
         this.mainPresenter = mainPresenter;
     }
@@ -45,12 +41,21 @@ public class LoginPresenter implements LoginPresenterInterface {
         try {
             Author author = new Author(id, surname, name);
 
-            repository.setUserId(author.getId());
+            //repository.setUserId(author.getId());
             mainPresenter.showView(author);
         } catch (AuthorNotValidException e) {
             view.displayMessage(e.getMessage());
         }
 
+    }
+
+    /**
+     * Renseigne une vue au presentateur
+     * @param view (LoginViewInterface)
+     */
+    @Override
+    public void setView(ViewInterface view) {
+        this.view = view;
     }
 
 }

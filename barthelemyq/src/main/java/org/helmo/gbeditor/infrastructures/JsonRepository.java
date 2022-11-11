@@ -5,7 +5,12 @@ import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 import org.helmo.gbeditor.infrastructures.dto.BookDTO;
 import org.helmo.gbeditor.models.Book;
+import org.helmo.gbeditor.models.Isbn;
+import org.helmo.gbeditor.models.Page;
+import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.repositories.DataInterface;
+import org.helmo.gbeditor.repositories.exceptions.ElementNotFoundException;
+import org.helmo.gbeditor.repositories.exceptions.UnableToSaveException;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -45,7 +50,6 @@ public class JsonRepository implements DataInterface {
      * Défini le nom du fichier de sauvegarde (ici : matricule auteur)
      * @param id (String) nom du fichier
      */
-    @Override
     public void setUserId(String id) {
         jsonBooksPath = Path.of(System.getProperty("user.home"), "ue36", id + ".json").toAbsolutePath().toString();
     }
@@ -56,22 +60,32 @@ public class JsonRepository implements DataInterface {
      * @throws IOException Impossible de sauvegarder les livres
      */
     @Override
-    public void saveBook(Book book) throws IOException {
+    public void saveBook(Book book) throws UnableToSaveException {
         List<BookDTO> books;
         books = getAllBooks();
 
         if(books != null) {
-            books.add(Mapper.BookToDto(book));
+            books.add(Mapper.bookToDto(book));
         } else {
             books = new ArrayList<>();
-            books.add(Mapper.BookToDto(book));
+            books.add(Mapper.bookToDto(book));
         }
 
         setAllBooks(books);
     }
 
     @Override
-    public List<Book> getBooks() throws IOException {
+    public void savePages(List<Page> pages) {
+
+    }
+
+    @Override
+    public List<Book> retrieveBooks(String authorId) throws ElementNotFoundException {
+        return null;
+    }
+
+    @Override
+    public List<Page> getBookPages(String isbn) throws ElementNotFoundException, IsbnNotValidException {
         return null;
     }
 
@@ -80,11 +94,11 @@ public class JsonRepository implements DataInterface {
      * @return (int) nombre de livres
      */
     @Override
-    public int getBookCount() throws IOException {
+    public int getBookCount(String authorId) throws ElementNotFoundException {
         List<BookDTO> books;
         books = getAllBooks();
 
-        if(books == null) { throw new IOException("Aucuns livres trouvés en sauvegarde, fichier créé"); }
+        if(books == null) { throw new ElementNotFoundException("Aucuns livres trouvés en sauvegarde, fichier créé"); }
 
         return books.size();
     }
@@ -112,11 +126,11 @@ public class JsonRepository implements DataInterface {
      * @param books (List<BookDTO>) Liste de tous les livres en Objet DTO
      * @throws IOException Impossible de sauvegarder les livres
      */
-    private void setAllBooks(List<BookDTO> books) throws IOException {
+    private void setAllBooks(List<BookDTO> books) throws UnableToSaveException {
         try(FileWriter fw = new FileWriter(jsonBooksPath, StandardCharsets.UTF_8)) {
             gson.toJson(books, fw);
         } catch (JsonIOException | IOException e) {
-            throw new IOException("Impossible de sauvegarder les livres");
+            throw new UnableToSaveException("Impossible de sauvegarder les livres");
         }
     }
 }

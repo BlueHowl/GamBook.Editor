@@ -1,6 +1,6 @@
 package org.helmo.gbeditor;
 
-import org.helmo.gbeditor.customexceptions.AuthorNotValidException;
+import org.helmo.gbeditor.models.exceptions.AuthorNotValidException;
 import org.helmo.gbeditor.models.Author;
 import org.junit.jupiter.api.Test;
 

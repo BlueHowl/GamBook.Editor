@@ -1,6 +1,6 @@
 package org.helmo.gbeditor;
 
-import org.helmo.gbeditor.customexceptions.IsbnNotValidException;
+import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.models.Isbn;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package org.helmo.gbeditor.infrastructures.jdbc.exceptions;
+package org.helmo.gbeditor.repositories.exceptions;
 
 import java.sql.SQLException;
 

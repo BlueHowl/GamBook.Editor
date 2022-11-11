@@ -1,6 +1,6 @@
 package org.helmo.gbeditor.presenters.interfaces.presenters;
 
-import org.helmo.gbeditor.presenters.interfaces.views.MainViewInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.ViewInterface;
 
 public interface LoginPresenterInterface {
 
@@ -11,5 +11,11 @@ public interface LoginPresenterInterface {
      * @param name (nom)
      */
     void login(String id, String surname, String name);
+
+    /**
+     * Renseigne une vue au presentateur
+     * @param view (LoginViewInterface)
+     */
+    void setView(ViewInterface view);
 
 }

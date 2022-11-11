@@ -1,6 +1,6 @@
 package org.helmo.gbeditor.models;
 
-import org.helmo.gbeditor.customexceptions.IsbnNotValidException;
+import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 
 /**
  * Classe Isbn

@@ -2,7 +2,10 @@ package org.helmo.gbeditor;
 
 import org.helmo.gbeditor.infrastructures.jdbc.SqlStorage;
 import org.helmo.gbeditor.infrastructures.jdbc.SqlStorageFactory;
-import org.helmo.gbeditor.infrastructures.jdbc.exceptions.UnableToTearDownException;
+import org.helmo.gbeditor.models.Book;
+import org.helmo.gbeditor.models.Isbn;
+import org.helmo.gbeditor.repositories.exceptions.UnableToSetupException;
+import org.helmo.gbeditor.repositories.exceptions.UnableToTearDownException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +26,8 @@ public class DBRepositoryTest {
         try(SqlStorage storage = factory.newStorageSession()) {
             try {
                 storage.setup();
-                //storage.tearDown();
-            } catch(UnableToTearDownException ex) {
-                //Cette exception peut être lancée si le schéma ne contient pas les tables.
-                //La méthode essaie alors de créer les tables.
+            } catch(UnableToSetupException ex) {
+
             }
         }
     }
@@ -42,8 +43,12 @@ public class DBRepositoryTest {
     }
 
     @Test
-    public void test() {
+    public void saveBook() throws Exception {
+        try(SqlStorage storage = factory.newStorageSession()) {
+            storage.saveBook(new Book("titre", "description", "auteur", new Isbn("2-111111-04-x")));
 
+            assertEquals(1, storage.getBookCount("111111"));
+        }
     }
 
     /*

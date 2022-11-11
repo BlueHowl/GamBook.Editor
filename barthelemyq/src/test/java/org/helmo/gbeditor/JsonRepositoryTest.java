@@ -3,12 +3,14 @@ package org.helmo.gbeditor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.helmo.gbeditor.customexceptions.BookNotValidException;
-import org.helmo.gbeditor.customexceptions.IsbnNotValidException;
+import org.helmo.gbeditor.models.exceptions.BookNotValidException;
+import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.models.Book;
 import org.helmo.gbeditor.models.Isbn;
 import org.helmo.gbeditor.repositories.DataInterface;
 import org.helmo.gbeditor.infrastructures.JsonRepository;
+import org.helmo.gbeditor.repositories.exceptions.ElementNotFoundException;
+import org.helmo.gbeditor.repositories.exceptions.UnableToSaveException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,8 +68,8 @@ public class JsonRepositoryTest {
     @Test
     public void getBookCount0Test() {
         try {
-            assertEquals(0, jsonRepository.getBookCount());
-        } catch (IOException e) {
+            assertEquals(0, jsonRepository.getBookCount("test"));
+        } catch (ElementNotFoundException e) {
             assertEquals("Aucuns livres trouvés en sauvegarde, fichier créé", e.getMessage());
         }
     }
@@ -78,13 +80,13 @@ public class JsonRepositoryTest {
     @Test
     public void saveBookTest() {
         try {
-            Book book = new Book("titre", "description", "auteur", new Isbn("2-111111-04-x"), null);
+            Book book = new Book("titre", "description", "auteur", new Isbn("2-111111-04-x"));
 
             jsonRepository.saveBook(book);
 
-            assertEquals(1, jsonRepository.getBookCount());
-        } catch (BookNotValidException|IsbnNotValidException ignored) {
-        } catch (IOException e) {
+            assertEquals(1, jsonRepository.getBookCount("test"));
+        } catch (BookNotValidException | IsbnNotValidException | ElementNotFoundException ignored) {
+        } catch (UnableToSaveException e) {
             assertTrue(e.getMessage().equals("Impossible de sauvegarder les livres") || e.getMessage().equals("Aucuns livres trouvés en sauvegarde"));
         }
     }

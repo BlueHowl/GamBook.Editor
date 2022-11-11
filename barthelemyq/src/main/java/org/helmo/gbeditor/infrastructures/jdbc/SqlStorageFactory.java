@@ -1,8 +1,8 @@
 package org.helmo.gbeditor.infrastructures.jdbc;
 
 
-import org.helmo.gbeditor.infrastructures.jdbc.exceptions.ConnectionFailedException;
-import org.helmo.gbeditor.infrastructures.jdbc.exceptions.JdbcDriverNotFoundException;
+import org.helmo.gbeditor.repositories.exceptions.ConnectionFailedException;
+import org.helmo.gbeditor.repositories.exceptions.JdbcDriverNotFoundException;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,11 +23,11 @@ public class SqlStorageFactory {
         }
     }
 
-    public SqlStorage newStorageSession() { //TODO pourquoi n'était pas public ??
+    public SqlStorage newStorageSession() throws ConnectionFailedException{
         try {
             return new SqlStorage(DriverManager.getConnection(db, username, password));
         } catch (SQLException e) {
-            throw new ConnectionFailedException("Unable to acces db " + db, e);
+            throw new ConnectionFailedException("Impossible d'accéder à la base de donnée", e);
         }
     }
 }

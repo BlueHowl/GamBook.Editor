@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
 import org.helmo.gbeditor.presenters.interfaces.views.MainViewInterface;
+import org.helmo.gbeditor.views.subviews.BookListView;
+import org.helmo.gbeditor.views.subviews.CreateBookView;
+import org.helmo.gbeditor.views.subviews.PagesGestionView;
 
 
 /**
@@ -22,10 +25,6 @@ public class MainView implements MainViewInterface {
     private Stage primaryStage;
     private Scene scene;
 
-    public MainView(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
     private Label message = new Label(); {
         message.getStyleClass().add("wrap-text");
     }
@@ -34,8 +33,8 @@ public class MainView implements MainViewInterface {
     private Label userInfoText = new Label("");
     private BorderPane TopBox = new BorderPane(); {
 
-        MenuItem menuItem1 = new MenuItem("Accueil"); { menuItem1.setOnAction(action -> switchPane(0)); }
-        MenuItem menuItem2 = new MenuItem("Nouveau"); { menuItem2.setOnAction(action -> switchPane(1)); }
+        MenuItem menuItem1 = new MenuItem("Accueil"); { menuItem1.setOnAction(action -> presenter.switchPane(0)); }
+        MenuItem menuItem2 = new MenuItem("Nouveau"); { menuItem2.setOnAction(action -> presenter.switchPane(1)); }
         MenuItem menuItem3 = new MenuItem("Quitter"); { menuItem3.setOnAction(action -> quit()); }
 
         MenuButton topMenu = new MenuButton("Menu", null, menuItem1, menuItem2, menuItem3);
@@ -47,18 +46,27 @@ public class MainView implements MainViewInterface {
         userInfoText.getStyleClass().add("user-info-text");
     }
 
-    private CreateBookView cbv = new CreateBookView(presenter);
-    private BookListView blv = new BookListView(presenter);
+    private CreateBookView cbv;
+    private BookListView blv;
+    private PagesGestionView pgv;
 
+    private StackPane viewStackPane = new StackPane();
     private BorderPane mainPane = new BorderPane();{
         mainPane.setTop(TopBox);
 
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().add(cbv);
-        stackPane.getChildren().add(blv);
-
-        mainPane.setCenter(stackPane);
+        mainPane.setCenter(viewStackPane);
         mainPane.setBottom(message);
+    }
+
+    public MainView(Stage primaryStage, MainPresenterInterface presenter) {
+        this.primaryStage = primaryStage;
+        this.presenter = presenter;
+
+        presenter.setView(this);
+
+        viewStackPane.getChildren().add(cbv = new CreateBookView(presenter));
+        viewStackPane.getChildren().add(blv = new BookListView(presenter));
+        viewStackPane.getChildren().add(pgv = new PagesGestionView(presenter));
     }
 
     /**
@@ -66,8 +74,10 @@ public class MainView implements MainViewInterface {
      */
     private void SetupView() {
         String userInfos = presenter.getUserInfos();
-        userInfoText.setText(userInfos);
-        //cbv.author.setText(userInfos);
+        userInfoText.setText("Auteur : " + userInfos);
+        cbv.setAuthor(userInfos);
+
+        switchPane(0);
     }
 
     /**
@@ -107,37 +117,25 @@ public class MainView implements MainViewInterface {
      * @param id (int) identifiant du panel
      */
     @Override
-    public void switchPane(int id) { //remplacer par liste de menu et activer sur base d'index ?
+    public void switchPane(int id) { //todo remplacer par liste de menu et activer sur base d'index ?
         cbv.setVisible(false);
         blv.setVisible(false);
+        pgv.setVisible(false);
 
         switch (id) {
             case 0:
                 blv.setVisible(true);
+                blv.setBookListView(presenter.getBooks());
                 break;
             case 1:
-                //faire fonction pour
                 cbv.setVisible(true);
-
-                /*bookTitle.clear();
-                summary.clear();
-
-                String isbnNumber = presenter.generateIsbn();
-                isbn.setText(isbnNumber.substring(0, isbnNumber.length()-2));
-                isbnVerif.setText(isbnNumber.substring(isbnNumber.length()-2));*/
+                cbv.initializeFields();
                 break;
             case 2:
+                pgv.setVisible(true);
+                pgv.setPageListView(presenter.getBookPages());
                 break;
         }
-    }
-
-    /**
-     * Renseigne un presenter à la vue
-     * @param presenter (MainPresenterInterface)
-     */
-    @Override
-    public void setPresenter(MainPresenterInterface presenter) {
-        this.presenter = presenter;
     }
 
     /**

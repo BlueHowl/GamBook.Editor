@@ -1,7 +1,7 @@
 package org.helmo.gbeditor.infrastructures.dto;
 
 import org.helmo.gbeditor.models.Page;
-import org.helmo.gbeditor.utils.InputUtil;
+import org.helmo.gbeditor.models.utils.InputUtil;
 
 public class ChoiceDTO {
     private String text;

@@ -1,17 +1,17 @@
 package org.helmo.gbeditor.presenters.viewmodels;
 
 /**
- * Classe de stockage de données book pour les vues
+ * Classe de stockage de données livre pour les vues
  */
 public class BookViewModel {
 
-    private final String title;
+    public final String title;
 
-    private final String summary;
+    public final String summary;
 
-    private final String author;
+    public final String author;
 
-    private final String isbn;
+    public final String isbn;
 
     /**
      * Constructeur livre pour les vues

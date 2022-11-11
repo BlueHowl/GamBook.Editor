@@ -10,12 +10,6 @@ import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterfac
 public interface MainViewInterface extends ViewInterface{
 
     /**
-     * Renseigne un presenter à la vue
-     * @param presenter (MainPresenterInterface)
-     */
-    void setPresenter(MainPresenterInterface presenter);
-
-    /**
      * Affiche la vue
      */
     void showView();

@@ -1,4 +1,4 @@
-package org.helmo.gbeditor.utils;
+package org.helmo.gbeditor.models.utils;
 
 /**
  * Classe utile de vérification des entrées utilisateur
