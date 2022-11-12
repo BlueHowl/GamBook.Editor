@@ -20,4 +20,10 @@ public interface MainViewInterface extends ViewInterface{
      */
     void switchPane(int id);
 
+    /**
+     * Rafraichis la sous-vue selon son identifiant
+     * @param id (int)
+     */
+    void refreshSubView(int id);
+
 }

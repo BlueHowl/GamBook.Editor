@@ -1,6 +1,7 @@
 package org.helmo.gbeditor.infrastructures;
 
 import org.helmo.gbeditor.models.exceptions.BookNotValidException;
+import org.helmo.gbeditor.models.exceptions.ChoiceNotValidException;
 import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.infrastructures.dto.BookDTO;
 import org.helmo.gbeditor.infrastructures.dto.ChoiceDTO;
@@ -9,6 +10,7 @@ import org.helmo.gbeditor.models.Book;
 import org.helmo.gbeditor.models.Choice;
 import org.helmo.gbeditor.models.Isbn;
 import org.helmo.gbeditor.models.Page;
+import org.helmo.gbeditor.models.exceptions.PageNotValidException;
 import org.helmo.gbeditor.presenters.viewmodels.BookViewModel;
 import org.helmo.gbeditor.presenters.viewmodels.ChoiceViewModel;
 import org.helmo.gbeditor.presenters.viewmodels.PageViewModel;
@@ -64,7 +66,7 @@ public class Mapper {
      * @param pageDTO (PageDTO) objet à convertir
      * @return (Page) objet converti
      */
-    public static Page dtoToPage(PageDTO pageDTO) throws IsbnNotValidException{
+    public static Page dtoToPage(PageDTO pageDTO) throws IsbnNotValidException, PageNotValidException, ChoiceNotValidException {
         List<Choice> choices = new ArrayList<>();
 
         for (ChoiceDTO choice : pageDTO.getChoices()) {
@@ -89,7 +91,7 @@ public class Mapper {
      * @param choiceDTO (ChoiceDTO) objet à convertir
      * @return (Choice) objet converti
      */
-    public static Choice dtoToChoice(ChoiceDTO choiceDTO) {
+    public static Choice dtoToChoice(ChoiceDTO choiceDTO) throws ChoiceNotValidException {
         return new Choice(choiceDTO.getText(), choiceDTO.getRef());
     }
 
@@ -101,7 +103,7 @@ public class Mapper {
      * @param books (List<Book>) liste de livres
      * @return (List<BookViewModel>) liste de livres pour vue
      */
-    public static List<BookViewModel> bookToViewModel(List<Book> books) { //todo possible de convertir avec une interface fonctionnelle ?
+    public static List<BookViewModel> bookToViewModel(List<Book> books) {
         List<BookViewModel> viewModelBooks = new ArrayList<>();
 
         if(books != null) {
@@ -118,7 +120,7 @@ public class Mapper {
      * @param pages (List<Page>) liste de pages
      * @return (List<PageViewModel>) liste de pages pour vue
      */
-    public static List<PageViewModel> PageToViewModel(List<Page> pages) { //todo possible de convertir avec une interface fonctionnelle ?
+    public static List<PageViewModel> PageToViewModel(List<Page> pages) {
         List<PageViewModel> viewModelPage = new ArrayList<>();
 
         if(pages != null) {
@@ -135,7 +137,7 @@ public class Mapper {
      * @param choices (List<Choice>) liste de choix
      * @return (List<ChoiceViewModel>) liste de choix pour vue
      */
-    public static List<ChoiceViewModel> ChoiceToViewModel(List<Choice> choices, List<Page> pages) { //todo possible de convertir avec une interface fonctionnelle ?
+    public static List<ChoiceViewModel> ChoiceToViewModel(List<Choice> choices, List<Page> pages) {
         List<ChoiceViewModel> viewModelPage = new ArrayList<>();
 
         if(choices != null) {

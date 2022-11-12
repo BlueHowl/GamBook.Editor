@@ -11,11 +11,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 import org.helmo.gbeditor.presenters.viewmodels.PageViewModel;
 
 import java.util.List;
 
-public class PagesGestionView extends HBox {
+public class PagesGestionView extends HBox implements SubViewInterface {
 
     private MainPresenterInterface presenter;
 
@@ -74,11 +75,11 @@ public class PagesGestionView extends HBox {
                     @Override
                     public void changed(ObservableValue<? extends PageViewModel> observable, PageViewModel oldValue, PageViewModel newValue) {
                         if(presenter != null && newValue != null) {
-                            int index = data.indexOf(newValue);
+                            int index = data.indexOf(newValue); //TODO update currentPage au lieu de la page a l'index
                             presenter.setCurrentPage(index);
                             setPageDetails(newValue, index);
 
-                            cgv.setChoiceListView(presenter.getPageChoices(index));
+                            cgv.refresh();
                         }
                     }
                 });
@@ -88,7 +89,7 @@ public class PagesGestionView extends HBox {
 
     private Label wordCount = new Label("Caractères : 0");
     private TextArea pageText = new TextArea(); {
-        pageText.setPrefRowCount(12);
+        pageText.setPrefRowCount(14);
         pageText.setPrefColumnCount(100);
         pageText.setWrapText(true);
         pageText.setPrefWidth(600);
@@ -117,7 +118,8 @@ public class PagesGestionView extends HBox {
     private VBox editPage = new VBox(); {
         BorderPane bottomPane = new BorderPane(); {
             Button btnModifyElement = new Button("Modifier la page"); {
-                btnModifyElement.setOnAction(action -> presenter.modifyPageOfCurrentBook(Integer.parseInt(pageNumber.getText()) - 1, pageText.getText())); //TODO gerer exception parseint
+                btnModifyElement.setOnAction(action -> presenter.modifyPageOfCurrentBook(Integer.parseInt(pageNumber.getText()) - 1, pageText.getText()));
+                //TODO gerer exception parseint
             }
 
             bottomPane.setLeft(pageNumberBox);
@@ -142,7 +144,8 @@ public class PagesGestionView extends HBox {
 
 
         Button btnAddElementUnder = new Button(); {
-            btnAddElementUnder.setOnAction(action -> presenter.addPageToCurrentBook(Integer.parseInt(pageNumber.getText()), pageText.getText())); //TODO gerer exception parseint
+            btnAddElementUnder.setOnAction(action -> presenter.addPageToCurrentBook(Integer.parseInt(pageNumber.getText()), pageText.getText()));
+            //TODO gerer exception parseint
 
             btnAddElementUnder.setGraphic(addElementUnderLogo);
         }
@@ -161,10 +164,10 @@ public class PagesGestionView extends HBox {
      * Constructeur de la sous vue
      * @param presenter (MainPresenterInterface)
      */
-    public PagesGestionView(MainPresenterInterface presenter) {
+    public PagesGestionView(MainPresenterInterface presenter, ChoicesGestionView cgv) {
         this.presenter = presenter;
 
-        editPage.getChildren().add(cgv = new ChoicesGestionView(presenter));
+        editPage.getChildren().add(this.cgv = cgv);
 
         this.getChildren().addAll(container, toolBar, editPage);
 
@@ -174,11 +177,22 @@ public class PagesGestionView extends HBox {
     /**
      * Défini la liste de pages
      * affiche les livres de l'auteur
-     * @param pageViewModelList (List<PageViewModel>) liste de pages à afficher
      */
-    public void setPageListView(List<PageViewModel> pageViewModelList) {
+    @Override
+    public void refresh() {
+        List<PageViewModel> pageViewModelList = presenter.getBookPages();
+
         data.setAll(pageViewModelList);
         setPageDetails(new PageViewModel("", 1), pageViewModelList.size()); //affiche de base une page vide avec le numéro de la prochaine page
+    }
+
+    /**
+     * Modifie la visibilité de la vue
+     * @param b (boolean)
+     */
+    @Override
+    public void setVisibility(boolean b) {
+        this.setVisible(b);
     }
 
     /**

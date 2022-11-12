@@ -1,6 +1,7 @@
 package org.helmo.gbeditor.models;
 
 import org.helmo.gbeditor.models.exceptions.BookNotValidException;
+import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.models.exceptions.PageNotValidException;
 import org.helmo.gbeditor.models.utils.InputUtil;
 
@@ -12,13 +13,13 @@ import java.util.List;
  */
 public class Book {
 
-    private final String title;
+    private String title;
 
-    private final String summary;
+    private String summary;
 
     private final String author;
 
-    private final Isbn isbn;
+    private Isbn isbn;
 
     private List<Page> pages;
 
@@ -31,7 +32,7 @@ public class Book {
      * @throws BookNotValidException si les données du livre récupéré sont incorrectes
      */
     public Book(String title, String summary, String author, Isbn isbn) throws BookNotValidException {
-        checkBookParameters(title, summary, author, isbn);
+        checkBookParameters(title, summary, author);
 
         this.title = title.trim();
         this.summary = summary.trim();
@@ -44,10 +45,9 @@ public class Book {
      * @param title (String) titre
      * @param summary (String) description
      * @param author (String) nom et prenom de l'auteur
-     * @param isbn (Isbn)
      * @throws BookNotValidException si les données du livre récupéré sont incorrectes
      */
-    private void checkBookParameters(String title, String summary, String author, Isbn isbn) throws BookNotValidException{
+    private void checkBookParameters(String title, String summary, String author) throws BookNotValidException{
         if(InputUtil.isEmptyOrBlank(title) ||
                 InputUtil.isEmptyOrBlank(summary) ||
                 InputUtil.isEmptyOrBlank(author))
@@ -108,8 +108,12 @@ public class Book {
      * Récupère la page sur base de l'index
      * @return (Page)
      */
-    public Page getPageByIndex(int index) {
-        return pages.get(index);
+    public Page getPageByIndex(int index) throws PageNotValidException {
+        try {
+            return pages.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new PageNotValidException("La page au numéro donné n'existe pas");
+        }
     }
 
     /**
@@ -127,10 +131,10 @@ public class Book {
      * @param page (Page)
      */
     public void setPageAtIndex(int index, Page page) {
-        if(this.pages.isEmpty()) {
+        if(pages.isEmpty()) {
             pages.add(page);
         } else {
-            this.pages.add(index, page);
+            pages.add(index, page);
         }
     }
 
@@ -140,10 +144,30 @@ public class Book {
      * @param text (String)
      */
     public void modifyPageAtIndex(int index, String text) throws PageNotValidException {
-        if(!this.pages.isEmpty()) {
-            this.pages.get(index).setText(text);
+        if(!pages.isEmpty()) {
+            pages.get(index).setText(text);
         } else {
             throw new PageNotValidException("Impossible de modifier, aucune page sélectionnée");
         }
+    }
+
+    public void removePage(Page page) {
+        pages.remove(page);
+    }
+
+    /**
+     * Modifie le livre
+     * @param title (String) titre
+     * @param summary (String) description
+     * @param isbn (String) numéro isbn
+     * @throws BookNotValidException
+     * @throws IsbnNotValidException
+     */
+    public void modifyBook(String title, String summary, String isbn) throws BookNotValidException, IsbnNotValidException {
+        checkBookParameters(title, summary, this.getAuthor());
+
+        this.isbn = new Isbn(isbn);
+        this.title = title.trim();
+        this.summary = summary.trim();
     }
 }

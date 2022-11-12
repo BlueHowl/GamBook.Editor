@@ -9,7 +9,9 @@ import javafx.stage.Stage;
 
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
 import org.helmo.gbeditor.presenters.interfaces.views.MainViewInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 import org.helmo.gbeditor.views.subviews.BookListView;
+import org.helmo.gbeditor.views.subviews.ChoicesGestionView;
 import org.helmo.gbeditor.views.subviews.CreateBookView;
 import org.helmo.gbeditor.views.subviews.PagesGestionView;
 
@@ -46,9 +48,7 @@ public class MainView implements MainViewInterface {
         userInfoText.getStyleClass().add("user-info-text");
     }
 
-    private CreateBookView cbv;
-    private BookListView blv;
-    private PagesGestionView pgv;
+    private SubViewInterface subViews[] = new SubViewInterface[3];
 
     private StackPane viewStackPane = new StackPane();
     private BorderPane mainPane = new BorderPane();{
@@ -64,9 +64,21 @@ public class MainView implements MainViewInterface {
 
         presenter.setView(this);
 
-        viewStackPane.getChildren().add(cbv = new CreateBookView(presenter));
-        viewStackPane.getChildren().add(blv = new BookListView(presenter));
-        viewStackPane.getChildren().add(pgv = new PagesGestionView(presenter));
+
+        CreateBookView cbv = new CreateBookView(presenter);
+        BookListView blv = new BookListView(presenter);
+
+        ChoicesGestionView cgv = new ChoicesGestionView(presenter);
+        PagesGestionView pgv = new PagesGestionView(presenter, cgv);
+
+        subViews[0] = blv;
+        subViews[1] = cbv;
+        subViews[2] = pgv;
+        subViews[3] = cgv;
+
+        viewStackPane.getChildren().add(cbv);
+        viewStackPane.getChildren().add(blv);
+        viewStackPane.getChildren().add(pgv);
     }
 
     /**
@@ -75,7 +87,7 @@ public class MainView implements MainViewInterface {
     private void SetupView() {
         String userInfos = presenter.getUserInfos();
         userInfoText.setText("Auteur : " + userInfos);
-        cbv.setAuthor(userInfos);
+        //cbv.setAuthor(userInfos);
 
         switchPane(0);
     }
@@ -117,25 +129,22 @@ public class MainView implements MainViewInterface {
      * @param id (int) identifiant du panel
      */
     @Override
-    public void switchPane(int id) { //todo remplacer par liste de menu et activer sur base d'index ?
-        cbv.setVisible(false);
-        blv.setVisible(false);
-        pgv.setVisible(false);
-
-        switch (id) {
-            case 0:
-                blv.setVisible(true);
-                blv.setBookListView(presenter.getBooks());
-                break;
-            case 1:
-                cbv.setVisible(true);
-                cbv.initializeFields();
-                break;
-            case 2:
-                pgv.setVisible(true);
-                pgv.setPageListView(presenter.getBookPages());
-                break;
+    public void switchPane(int id) {
+        for(SubViewInterface subView : subViews) {
+            subView.setVisibility(false);
         }
+
+        subViews[id].setVisibility(true);
+        refreshSubView(id);
+    }
+
+    /**
+     * Rafraichis la sous-vue selon son identifiant
+     * @param id (int)
+     */
+    @Override
+    public void refreshSubView(int id) {
+        subViews[id].refresh();
     }
 
     /**

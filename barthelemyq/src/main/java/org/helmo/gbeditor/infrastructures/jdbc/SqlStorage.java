@@ -4,7 +4,9 @@ import org.helmo.gbeditor.infrastructures.Mapper;
 import org.helmo.gbeditor.infrastructures.dto.BookDTO;
 import org.helmo.gbeditor.models.Choice;
 import org.helmo.gbeditor.models.exceptions.BookNotValidException;
+import org.helmo.gbeditor.models.exceptions.ChoiceNotValidException;
 import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
+import org.helmo.gbeditor.models.exceptions.PageNotValidException;
 import org.helmo.gbeditor.repositories.exceptions.*;
 import org.helmo.gbeditor.models.Book;
 import org.helmo.gbeditor.models.Isbn;
@@ -84,7 +86,7 @@ public class SqlStorage implements AutoCloseable, DataInterface {
      * @param pages (List<Page>) liste des pages
      * @throws UnableToSaveException lorsque le livre n'a pas pû être sauvé
      */
-    @Override //TODO DO THE UPDATE CASE
+    @Override
     public void savePages(List<Page> pages) throws UnableToSaveException{
 
         try (PreparedStatement insertPagesStmt = connection.prepareStatement(INSERT_PAGE_STMT)) {
@@ -166,7 +168,7 @@ public class SqlStorage implements AutoCloseable, DataInterface {
      * @throws IsbnNotValidException
      */
     @Override
-    public List<Page> getBookPages(String isbn) throws ElementNotFoundException, IsbnNotValidException {
+    public List<Page> getBookPages(String isbn) throws ElementNotFoundException, IsbnNotValidException, PageNotValidException, ChoiceNotValidException {
         try (PreparedStatement selectStmt = connection.prepareStatement(SELECT_PAGES_BY_BOOK_STMT)) {
             selectStmt.setString(1, isbn);
             ResultSet rs = selectStmt.executeQuery();
@@ -190,7 +192,7 @@ public class SqlStorage implements AutoCloseable, DataInterface {
      * @param pages (List<Page>) liste des pages du livre
      * @throws ElementNotFoundException
      */
-    private void getChoices(String  isbn, List<Page> pages) throws ElementNotFoundException {
+    private void getChoices(String  isbn, List<Page> pages) throws ElementNotFoundException, ChoiceNotValidException {
         try (PreparedStatement selectStmt = connection.prepareStatement(SELECT_CHOICES_BY_BOOK_STMT)) {
             selectStmt.setString(1, isbn);
             ResultSet rs = selectStmt.executeQuery();
@@ -216,7 +218,6 @@ public class SqlStorage implements AutoCloseable, DataInterface {
             ResultSet rs = selectStmt.executeQuery();
 
             rs.next();
-
             return rs.getInt("bCount");
 
         } catch (SQLException e) {

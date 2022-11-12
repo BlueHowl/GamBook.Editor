@@ -1,5 +1,6 @@
 package org.helmo.gbeditor.models;
 
+import org.helmo.gbeditor.models.exceptions.ChoiceNotValidException;
 import org.helmo.gbeditor.models.utils.InputUtil;
 
 public class Choice {
@@ -8,11 +9,11 @@ public class Choice {
 
     private Page ref;
 
-    public Choice(String text, Page ref) {
+    public Choice(String text, Page ref) throws ChoiceNotValidException {
         if(InputUtil.isEmptyOrBlank(text)) {
-            //TODO throw error
+            throw new ChoiceNotValidException("Le choix ne peut pas avoir un texte vide");
         } else if (ref == null) {
-            //todo throw err
+            throw  new ChoiceNotValidException("Le choix doit renvoyer sur une page valide");
         }
 
         this.text = text;

@@ -1,10 +1,11 @@
 package org.helmo.gbeditor.repositories;
 
 import org.helmo.gbeditor.models.Book;
-import org.helmo.gbeditor.models.Isbn;
 import org.helmo.gbeditor.models.Page;
 import org.helmo.gbeditor.models.exceptions.BookNotValidException;
+import org.helmo.gbeditor.models.exceptions.ChoiceNotValidException;
 import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
+import org.helmo.gbeditor.models.exceptions.PageNotValidException;
 import org.helmo.gbeditor.repositories.exceptions.ElementNotFoundException;
 import org.helmo.gbeditor.repositories.exceptions.UnableToSaveException;
 
@@ -14,7 +15,7 @@ import java.util.List;
 /**
  * Interface repository
  */
-public interface DataInterface { //TODO changer les ioException en exceptions custom
+public interface DataInterface {
 
     /**
      * Sauvegarde un livre
@@ -42,7 +43,7 @@ public interface DataInterface { //TODO changer les ioException en exceptions cu
      * @return (List<Page>) liste de pages
      * @throws IOException
      */
-    List<Page> getBookPages(String isbn) throws ElementNotFoundException, IsbnNotValidException;
+    List<Page> getBookPages(String isbn) throws ElementNotFoundException, IsbnNotValidException, PageNotValidException, ChoiceNotValidException;
 
     /**
      * Récupère le nombre de livres stockés

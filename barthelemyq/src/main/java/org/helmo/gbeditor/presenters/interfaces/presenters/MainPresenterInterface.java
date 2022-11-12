@@ -1,7 +1,7 @@
 package org.helmo.gbeditor.presenters.interfaces.presenters;
 
 import org.helmo.gbeditor.models.Author;
-import org.helmo.gbeditor.models.Book;
+import org.helmo.gbeditor.models.Page;
 import org.helmo.gbeditor.presenters.interfaces.views.MainViewInterface;
 import org.helmo.gbeditor.presenters.viewmodels.BookViewModel;
 import org.helmo.gbeditor.presenters.viewmodels.ChoiceViewModel;
@@ -51,13 +51,21 @@ public interface MainPresenterInterface {
     void setCurrentChoice(int selectedChoice);
 
     /**
-     * Crée un livre et le sauvegarde
+     * Crée un livre
      * @param title (String) titre
      * @param summary (String) description
      * @param author (String) auteur
      * @param isbn (String) numéro isbn
      */
-    void createUpdateBook(String title, String summary, String author, String isbn);
+    void createBook(String title, String summary, String author, String isbn);
+
+    /**
+     * Modifie le livre courant
+     * @param title (String) titre
+     * @param summary (String) description
+     * @param isbn (String) numéro isbn
+     */
+    void modifyCurrentBook(String title, String summary, String isbn);
 
     /**
      * Récupère les livres de l'auteur
@@ -75,7 +83,7 @@ public interface MainPresenterInterface {
      * Récupère les choix de la page courante
      * @return (List<ChoiceViewModel>) liste de choix
      */
-    List<ChoiceViewModel> getPageChoices(int index);
+    List<ChoiceViewModel> getPageChoices();
 
     /**
      * Ajoute une page au livre courant
@@ -92,6 +100,11 @@ public interface MainPresenterInterface {
     void modifyPageOfCurrentBook(int index, String text);
 
     /**
+     * Supprime la page courante
+     */
+    void removeCurrentPage();
+
+    /**
      * Ajoute un choix à la page courante
      * @param text (String) texte du choix
      * @param refPageNum (int) numéro de la page liée
@@ -104,6 +117,11 @@ public interface MainPresenterInterface {
      * @param refPageNum (int)
      */
     void modifyChoiceOfCurrentPage(String text, int refPageNum);
+
+    /**
+     * Supprime le choix courant
+     */
+    void removeCurrentChoice();
 
     /**
      * Change de vue en fonction de l'id

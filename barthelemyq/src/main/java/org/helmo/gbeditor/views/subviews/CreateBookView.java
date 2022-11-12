@@ -9,11 +9,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 
 /**
  * Vue création livre
  */
-public class CreateBookView extends GridPane {
+public class CreateBookView extends GridPane implements SubViewInterface {
 
     private MainPresenterInterface presenter;
 
@@ -114,7 +115,7 @@ public class CreateBookView extends GridPane {
 
     private BorderPane createBtnBox = new BorderPane(); {
         Button createButton = new Button("Créer le livre"); {
-            createButton.setOnAction(action -> presenter.createUpdateBook(bookTitle.getText(), summary.getText(), author.getText(), isbn.getText() + isbnVerif.getText()));
+            createButton.setOnAction(action -> presenter.createBook(bookTitle.getText(), summary.getText(), author.getText(), isbn.getText() + isbnVerif.getText()));
 
             createButton.getStyleClass().add("");
         }
@@ -147,9 +148,12 @@ public class CreateBookView extends GridPane {
     /**
      * initialise les champs de la vue
      */
-    public void initializeFields() {
+    @Override
+    public void refresh() {
         bookTitle.clear();
         summary.clear();
+
+        this.author.setText(presenter.getUserInfos());
 
         String isbnNumber = presenter.generateIsbn();
         isbn.setText(isbnNumber.substring(0, isbnNumber.length()-2));
@@ -157,12 +161,23 @@ public class CreateBookView extends GridPane {
     }
 
     /**
+     * Modifie la visibilité de la vue
+     * @param b (boolean)
+     */
+    @Override
+    public void setVisibility(boolean b) {
+        this.setVisible(b);
+    }
+
+    /*
+    /**
      * initialise le champs auteur
      * opération séparée car champs invariable
      * @param author (String) nom et prénom de l'auteur
      */
+    /*
     public void setAuthor(String author) {
         this.author.setText(author);
     }
-
+    */
 }

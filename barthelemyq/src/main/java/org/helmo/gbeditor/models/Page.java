@@ -36,9 +36,9 @@ public class Page {
      * @param choices (List<Choice>) liste de choix
      * @param bookIsbn (Isbn) isbn du livre qui contient la page
      */
-    public Page(String text, Collection<Choice> choices, Isbn bookIsbn) {
+    public Page(String text, Collection<Choice> choices, Isbn bookIsbn) throws PageNotValidException {
         if(InputUtil.isEmptyOrBlank(text)) {
-            //TODO throw error
+            throw new PageNotValidException("La page ne peut pas avoir un texte vide");
         }
 
         this.text = text;
@@ -88,6 +88,10 @@ public class Page {
      */
     public void addChoice(Choice choice) {
         choices.add(choice);
+    }
+
+    public void removeChoice(Choice choice) {
+        choices.remove(choice);
     }
 
 }

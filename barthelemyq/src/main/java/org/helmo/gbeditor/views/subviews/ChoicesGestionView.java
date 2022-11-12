@@ -11,12 +11,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 import org.helmo.gbeditor.presenters.viewmodels.ChoiceViewModel;
-import org.helmo.gbeditor.presenters.viewmodels.PageViewModel;
 
-import java.util.List;
-
-public class ChoicesGestionView extends HBox {
+//todo add to subviewinterface ?
+public class ChoicesGestionView extends HBox implements SubViewInterface {
 
     private MainPresenterInterface presenter;
 
@@ -114,7 +113,8 @@ public class ChoicesGestionView extends HBox {
     private VBox editPage = new VBox(); {
         BorderPane bottomPane = new BorderPane(); {
             Button btnModifyElement = new Button("Modifier le choix"); {
-                btnModifyElement.setOnAction(action -> presenter.modifyChoiceOfCurrentPage(choiceText.getText(), Integer.parseInt(pageNumber.getText()) - 1)); //TODO gerer exception parseint
+                btnModifyElement.setOnAction(action -> presenter.modifyChoiceOfCurrentPage(choiceText.getText(), Integer.parseInt(pageNumber.getText()) - 1));
+                //TODO gerer exception parseint
             }
 
             bottomPane.setLeft(pageNumberBox);
@@ -139,7 +139,8 @@ public class ChoicesGestionView extends HBox {
 
 
         Button btnAddElement = new Button(); {
-            btnAddElement.setOnAction(action -> presenter.addChoiceToCurrentPage(choiceText.getText(), Integer.parseInt(pageNumber.getText()))); //TODO gerer exception parseint
+            btnAddElement.setOnAction(action -> presenter.addChoiceToCurrentPage(choiceText.getText(), Integer.parseInt(pageNumber.getText())));
+            //TODO gerer exception parseint
 
             btnAddElement.setGraphic(addElementUnderLogo);
         }
@@ -163,12 +164,23 @@ public class ChoicesGestionView extends HBox {
     /**
      * Défini la liste de choix
      * affiche les choix de la page
-     * @param choiceViewModelList (List<ChoiceViewModel>) liste de choix à afficher
      */
-    public void setChoiceListView(List<ChoiceViewModel> choiceViewModelList) {
-        data.setAll(choiceViewModelList);
+    @Override
+    public void refresh() {
+        data.setAll(presenter.getPageChoices());
     }
 
+    /**
+     * Fonction inutile à la vue des choix
+     * @param b (boolean)
+     */
+    @Override
+    public void setVisibility(boolean b) {}
+
+    /**
+     * Défini les détails du choix sélectionné
+     * @param choiceViewModel (ChoiceViewModel)
+     */
     private void setChoiceDetails(ChoiceViewModel choiceViewModel) {
         choiceText.setText(choiceViewModel.getText());
         pageNumber.setText(String.valueOf(choiceViewModel.getRefPageNumber()));

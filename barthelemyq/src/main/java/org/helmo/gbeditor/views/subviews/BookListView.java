@@ -12,14 +12,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 import org.helmo.gbeditor.presenters.viewmodels.BookViewModel;
-
-import java.util.List;
 
 /**
  * Vue Description Livre
  */
-public class BookListView extends BorderPane {
+public class BookListView extends BorderPane implements SubViewInterface {
 
     private MainPresenterInterface presenter;
 
@@ -61,8 +60,7 @@ public class BookListView extends BorderPane {
             if (newValue.length() > 11 || newValue.length() < 9 || !newValue.matches("\\d{1}-\\d{6}-\\d*")) {
                 editableIsbn.setText(oldValue);
             } else {
-
-                if(presenter != null) { //TODO modifier ????
+                if(presenter != null) {
                     editableIsbnVerif.setText(presenter.getIsbnVerif(newValue));
                 }
             }
@@ -124,7 +122,7 @@ public class BookListView extends BorderPane {
 
     private HBox editableBtnBox = new HBox(); {
         Button modifyButton = new Button("Modifier le livre"); {
-            modifyButton.setOnAction(action -> presenter.createUpdateBook(editableBookTitle.getText(), editableSummary.getText(), editableAuthor.getText(), editableIsbn.getText() + editableIsbnVerif.getText()));
+            modifyButton.setOnAction(action -> presenter.modifyCurrentBook(editableBookTitle.getText(), editableSummary.getText(), editableIsbn.getText() + editableIsbnVerif.getText()));
 
             modifyButton.getStyleClass().add("");
         }
@@ -153,7 +151,7 @@ public class BookListView extends BorderPane {
             if (item != null) {//limite titre 15 premiers caracteres
                 VBox box = new VBox(); {
                     String titleString = item.getTitle();
-                    Label title = new Label("Titre : " + titleString.substring(0, Math.min(titleString.length(), 15)) + ((titleString.length() > 14) ? "..." : "")); //TODO CHECK length > 14
+                    Label title = new Label("Titre : " + titleString.substring(0, Math.min(titleString.length(), 15)) + ((titleString.length() >= 15) ? "..." : ""));
                     Label infos = new Label("Auteur : " + item.getAuthor() + ", Isbn : " + item.getIsbn());
 
                     box.getChildren().add(title);
@@ -183,7 +181,7 @@ public class BookListView extends BorderPane {
         new ChangeListener<BookViewModel>() {
             @Override
             public void changed(ObservableValue<? extends BookViewModel> observable, BookViewModel oldValue, BookViewModel newValue) {
-                if(presenter != null && newValue != null) { //TODO do smth with presenter ?
+                if(presenter != null && newValue != null) {
                     setBookDetails(newValue);
                     presenter.setCurrentBook(data.indexOf(newValue));
                 }
@@ -221,10 +219,19 @@ public class BookListView extends BorderPane {
     /**
      * Défini la liste de livres
      * affiche les livres de l'auteur
-     * @param bookViewModelList (List<BookViewModel>) list de livres à afficher
      */
-    public void setBookListView(List<BookViewModel> bookViewModelList) {
-        data.setAll(bookViewModelList);
+    @Override
+    public void refresh() {
+        data.setAll(presenter.getBooks());
+    }
+
+    /**
+     * Modifie la visibilité de la vue
+     * @param b (boolean)
+     */
+    @Override
+    public void setVisibility(boolean b) {
+        this.setVisible(b);
     }
 
     /**
