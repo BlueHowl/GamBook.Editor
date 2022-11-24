@@ -115,7 +115,6 @@ public class BookListPresenter implements SubPresenterInterface, BookListPInterf
             repository.publishBook(book);
             book.setToPublished();
         } catch (Exception e) {
-            e.printStackTrace();
             view.displayErrorMessage("Un problème est survenu lors de la publication du livre");
         }
 
