@@ -8,7 +8,8 @@
     <description>
         Ensemble de règles à valider pour l'Activité Intégrative.
     </description>
-
+    <exclude-pattern>.*/views/.*</exclude-pattern>
+    
     <!-- Your rules will come here -->
     <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly" />
     <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables" />
@@ -23,6 +24,12 @@
         </properties>
     </rule>
     <rule ref="category/java/bestpractices.xml/LooseCoupling" />
+    
+    <rule ref="category/java/design.xml/CouplingBetweenObjects">
+        <properties>
+            <property name="threshold" value="20" />
+        </properties>
+    </rule>
     <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" />
     <rule ref="category/java/bestpractices.xml/MissingOverride" />
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine" />
@@ -48,13 +55,17 @@
     <rule ref="category/java/codestyle.xml/ExtendsObject" />
     <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass" />
     <rule ref="category/java/codestyle.xml/FieldNamingConventions" />
-    <rule ref="category/java/codestyle.xml/LongVariable" />
+    <rule ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="minimum" value="30" />
+        </properties>
+    </rule>
     <rule ref="category/java/codestyle.xml/NoPackage" />
     <rule ref="category/java/codestyle.xml/PackageCase" />
     <rule ref="category/java/codestyle.xml/PrematureDeclaration" />
     <rule ref="category/java/codestyle.xml/ShortClassName">
         <properties>
-            <property name="minimum" value="4" />
+            <property name="minimum" value="3" />
         </properties>
     </rule>
     <rule ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
@@ -66,7 +77,11 @@
             <property name="cycloOptions" value="" />
         </properties>
     </rule>
-    <rule ref="category/java/design.xml/DataClass" />
+    <rule ref="category/java/design.xml/DataClass">
+        <properties>
+            <property name="violationSuppressRegex" value=".*'.*(Dto|DTO).*'.*"/>
+        </properties>
+    </rule>
     <rule ref="category/java/design.xml/ExcessiveParameterList">
         <properties>
             <property name="minimum" value="5" />
@@ -94,11 +109,6 @@
             <property name="maxfields" value="5" />
         </properties>
     </rule>
-    <rule ref="category/java/design.xml/TooManyMethods">
-        <properties>
-            <property name="maxmethods" value="15" />
-        </properties>
-    </rule>
     <rule ref="category/java/documentation.xml/CommentRequired">
         <properties>
             <property name="methodWithOverrideCommentRequirement" value="Ignored" />
@@ -118,5 +128,9 @@
         </properties>
     </rule>
     <rule ref="category/java/performance.xml/InefficientEmptyStringCheck" />
-    <rule ref="category/java/errorprone.xml/CloseResource" />
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="DataflowAnomalyAnalysis"  />
+        <exclude name="BeanMembersShouldSerialize" />
+        <exclude name="MissingSerialVersionUID" />
+    </rule>   
 </ruleset>

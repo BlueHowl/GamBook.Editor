@@ -1,7 +1,5 @@
 package org.helmo.gbeditor.presenters.viewmodels;
 
-import org.helmo.gbeditor.models.utils.InputUtil;
-
 /**
  * Classe de stockage de données page pour les vues
  */
@@ -16,10 +14,6 @@ public class PageViewModel {
      * @param text (String) texte de la page
      */
     public PageViewModel(String text, int pageNumber) {
-        if(InputUtil.isEmptyOrBlank(text)) {
-            //TODO throw error
-        }
-
         this.text = text;
         this.pageNumber = pageNumber;
     }

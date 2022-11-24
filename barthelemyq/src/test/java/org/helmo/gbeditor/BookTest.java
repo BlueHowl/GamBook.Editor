@@ -1,5 +1,6 @@
 package org.helmo.gbeditor;
 
+import org.helmo.gbeditor.models.Cover;
 import org.helmo.gbeditor.models.exceptions.BookNotValidException;
 import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.models.Book;
@@ -7,6 +8,7 @@ import org.helmo.gbeditor.models.Isbn;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Classe de test livre
@@ -19,12 +21,13 @@ public class BookTest {
     @Test
     public void gettersTest() {
         try {
-            Book book = new Book("titleTest", "summaryTest", "authorTest", new Isbn("2-111111-04-x"));
+            Book book = new Book(new Cover("titleTest", "summaryTest", "authorTest", new Isbn("2-111111-04-x")), true);
 
             assertEquals("titleTest", book.getTitle());
             assertEquals("summaryTest", book.getSummary());
             assertEquals("authorTest", book.getAuthor());
             assertEquals("2-111111-04-x", book.getIsbn());
+            assertTrue(book.isPublished());
         } catch (BookNotValidException|IsbnNotValidException ignored) {}
     }
 
@@ -34,7 +37,7 @@ public class BookTest {
     @Test
     public void BookBlankParamsTest() {
         try {
-            Book book = new Book("", "   ", "", new Isbn("2-111111-04-x"));
+            Book book = new Book(new Cover("", "   ", "", new Isbn("2-111111-04-x")), false);
         } catch (BookNotValidException|IsbnNotValidException e) {
             assertEquals("Tous les champs doivent être remplis", e.getMessage());
         }
@@ -46,7 +49,7 @@ public class BookTest {
     @Test
     public void BookTitleTooLongTest() {
         try {
-            new Book("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "s", "a", new Isbn("2-111111-04-x"));
+            new Book(new Cover("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "s", "a", new Isbn("2-111111-04-x")), false);
 
         } catch (BookNotValidException|IsbnNotValidException e) {
             assertEquals("Le titre ne peut pas faire plus que 150 caractères", e.getMessage());
@@ -65,7 +68,7 @@ public class BookTest {
                 "llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll+++++++++";
 
         try {
-            new Book("a", summary500Plus, "a", new Isbn("2-111111-04-x"));
+            new Book(new Cover("a", summary500Plus, "a", new Isbn("2-111111-04-x")), false);
 
         } catch (BookNotValidException|IsbnNotValidException e) {
             assertEquals("La description ne peut pas faire plus que 500 caractères", e.getMessage());

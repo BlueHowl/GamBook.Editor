@@ -15,9 +15,10 @@ public class AuthorTest {
     public void gettersTest() {
         try {
             Author author = new Author("000000", "testSurname", "testName");
-            assertEquals("000000", author.getId());
+            assertEquals("000000", author.getCode());
             assertEquals("testSurname", author.getSurname());
             assertEquals("testName", author.getName());
+            assertEquals("testSurname testName", author.getAuthorInfos());
         } catch (AuthorNotValidException ignored) {}
     }
 

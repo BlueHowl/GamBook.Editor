@@ -1,10 +1,6 @@
 package org.helmo.gbeditor.infrastructures.dto;
 
 import com.google.gson.annotations.SerializedName;
-import org.helmo.gbeditor.models.Page;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe DTO Book
@@ -23,6 +19,9 @@ public class BookDTO {
     @SerializedName("Isbn")
     public final String isbn;
 
+    @SerializedName("Published")
+    public final boolean published;
+
     /**
      * Constructeur livre DTO
      * @param title (String) titre
@@ -30,11 +29,12 @@ public class BookDTO {
      * @param author (String) auteur
      * @param isbn (String) numéro isbn
      */
-    public BookDTO(String title, String summary, String author, String isbn) {
+    public BookDTO(String title, String summary, String author, String isbn, boolean published) {
         this.title = title;
         this.summary = summary;
         this.author = author;
         this.isbn = isbn;
+        this.published = published;
     }
 
     /**
@@ -69,4 +69,11 @@ public class BookDTO {
         return isbn;
     }
 
+    /**
+     * Récupère la valeur de publication du livre
+     * @return (boolean)
+     */
+    public boolean isPublished() {
+        return published;
+    }
 }

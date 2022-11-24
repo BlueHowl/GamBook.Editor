@@ -5,6 +5,11 @@ import org.helmo.gbeditor.repositories.exceptions.UnableToRollbackException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Classe Transaction de Mr Ludewig
+ */
+@SuppressWarnings("PMD")
+
 public class Transaction {
 
     private final Connection con;
@@ -55,6 +60,7 @@ public class Transaction {
     }
 }
 
+@SuppressWarnings("PMD")
 class TransactionNotSupportedException extends RuntimeException {
     /**
 	 * 
@@ -66,11 +72,13 @@ class TransactionNotSupportedException extends RuntimeException {
     }
 }
 
+@SuppressWarnings("PMD")
 @FunctionalInterface
 interface ActionThrowingException {
     void execute(Connection con) throws Exception;
 }
 
+@SuppressWarnings("PMD")
 @FunctionalInterface
 interface ExceptionHandle {
     void handle(Exception ex);

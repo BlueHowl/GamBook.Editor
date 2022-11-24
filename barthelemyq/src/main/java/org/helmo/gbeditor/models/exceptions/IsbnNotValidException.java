@@ -3,7 +3,7 @@ package org.helmo.gbeditor.models.exceptions;
 /**
  * Exception ISBN invalide
  */
-public class IsbnNotValidException extends Exception{
+public class IsbnNotValidException extends Exception {
 
     /**
      *Remonte l'erreur donnée en paramètres

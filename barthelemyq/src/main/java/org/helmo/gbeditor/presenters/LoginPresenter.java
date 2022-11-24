@@ -6,6 +6,9 @@ import org.helmo.gbeditor.presenters.interfaces.presenters.LoginPresenterInterfa
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
 import org.helmo.gbeditor.presenters.interfaces.views.ViewInterface;
 import org.helmo.gbeditor.repositories.DataInterface;
+import org.helmo.gbeditor.repositories.StorageFactoryInterface;
+import org.helmo.gbeditor.repositories.exceptions.NotRetrievedException;
+import org.helmo.gbeditor.repositories.exceptions.NotSavedException;
 
 /**
  * Présentateur Login
@@ -16,17 +19,17 @@ public class LoginPresenter implements LoginPresenterInterface {
 
     private ViewInterface view;
 
-    private MainPresenterInterface mainPresenter;
+    private final MainPresenterInterface mainPresenter;
 
-    private final DataInterface repository;
+    private final StorageFactoryInterface factory;
 
     /**
      * Constructeur du présentateur
-     * @param repository (DataInterface)
+     * @param factory (StorageFactoryInterface)
      * @param mainPresenter (MainPresenterInterface) presentateur principal
      */
-    public LoginPresenter(DataInterface repository, MainPresenterInterface mainPresenter) {
-        this.repository = repository;
+    public LoginPresenter(StorageFactoryInterface factory, MainPresenterInterface mainPresenter) {
+        this.factory = factory;
         this.mainPresenter = mainPresenter;
     }
 
@@ -38,13 +41,16 @@ public class LoginPresenter implements LoginPresenterInterface {
      */
     @Override
     public void login(String id, String surname, String name) {
-        try {
+        try(DataInterface repository = factory.newStorageSession()) {
             Author author = new Author(id, surname, name);
 
-            //repository.setUserId(author.getId());
-            mainPresenter.showView(author);
-        } catch (AuthorNotValidException e) {
+            repository.connectAuthor(author);
+
+            mainPresenter.showMainView(author);
+        } catch (AuthorNotValidException | NotRetrievedException | NotSavedException e) {
             view.displayMessage(e.getMessage());
+        } catch (Exception e) {
+            view.displayErrorMessage("Impossible de se connecter");
         }
 
     }

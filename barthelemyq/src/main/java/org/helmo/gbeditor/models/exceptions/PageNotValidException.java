@@ -3,7 +3,8 @@ package org.helmo.gbeditor.models.exceptions;
 /**
  * Exception Page invalide
  */
-public class PageNotValidException extends Exception{
+public class PageNotValidException extends Exception {
+
     /**
      *Remonte l'erreur donnée en paramètres
      * @param errorMessage (String) message d'erreur

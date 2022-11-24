@@ -13,6 +13,8 @@ public class BookViewModel {
 
     public final String isbn;
 
+    public final boolean published;
+
     /**
      * Constructeur livre pour les vues
      * @param title (String) titre
@@ -20,11 +22,12 @@ public class BookViewModel {
      * @param author (String) auteur
      * @param isbn (String) numéro isbn
      */
-    public BookViewModel(String title, String summary, String author, String isbn) {
+    public BookViewModel(String title, String summary, String author, String isbn, boolean published) {
         this.title = title;
         this.summary = summary;
         this.author = author;
         this.isbn = isbn;
+        this.published = published;
     }
 
     /**
@@ -59,4 +62,11 @@ public class BookViewModel {
         return isbn;
     }
 
+    /**
+     * Récupère la valeur de publication
+     * @return (boolean)
+     */
+    public boolean isPublished() {
+        return published;
+    }
 }

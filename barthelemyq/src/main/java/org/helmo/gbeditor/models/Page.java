@@ -7,18 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
-// Page contient des choix
-// Numéro de page basé sur l'index dans la liste de page de book
-// Choix contient une ref vers l'objet page auquel il renvoi
-//
-// Lors de la sauvegarde enregistrer book, liste de page avec fk bookid
-// enregistrer choix avec fk pageid + convertir la ref vers l'objet en position dans la liste(numPage)
-// (chercher la page dans la liste grace à la ref du choix et retourner l'index)
-//
-//Lors du load :
-//attribuer les ref des pages correspondants à leur numéros pour les choix
-
 /**
  * Classe page
  */
@@ -26,24 +14,26 @@ public class Page {
 
     private String text;
 
-    private List<Choice> choices;
+    private final List<Choice> choices;
 
-    private Isbn bookIsbn;
+    private Choice currentChoice;
 
     /**
      * Constructeur de page
      * @param text (String) texte de la page
      * @param choices (List<Choice>) liste de choix
-     * @param bookIsbn (Isbn) isbn du livre qui contient la page
      */
-    public Page(String text, Collection<Choice> choices, Isbn bookIsbn) throws PageNotValidException {
-        if(InputUtil.isEmptyOrBlank(text)) {
-            throw new PageNotValidException("La page ne peut pas avoir un texte vide");
-        }
+    public Page(String text, Collection<Choice> choices) throws PageNotValidException {
+        checkPageParameters(text);
 
         this.text = text;
         this.choices = (choices == null) ? new ArrayList<>() : new ArrayList<>(choices); //copie la liste
-        this.bookIsbn = bookIsbn;
+    }
+
+    private void checkPageParameters(String text) throws PageNotValidException {
+        if(InputUtil.isEmptyOrBlank(text)) {
+            throw new PageNotValidException("La page ne peut pas avoir un texte vide");
+        }
     }
 
     /**
@@ -62,23 +52,38 @@ public class Page {
         return choices;
     }
 
+    /**
+     * Récupère un choix sur base de son index
+     * @param index (int)
+     * @return (Choice)
+     */
     public Choice getChoiceByIndex(int index) {
         return choices.get(index);
     }
 
     /**
-     * Récupère l'isbn du livre auquel appartient la page
-     * @return (String) isbn
+     * Défini le choix courant
+     * @param selectedChoice (int)
      */
-    public String getBookIsbn() {
-        return bookIsbn.getIsbn();
+    public void setCurrentChoice(int selectedChoice) {
+        currentChoice = getChoiceByIndex(selectedChoice);
+    }
+
+    /**
+     * Récupère le choix courant
+     * @return (Choice)
+     */
+    public Choice getCurrentChoice() {
+        return currentChoice;
     }
 
     /**
      * Défini le texte de la page
      * @param text
      */
-    public void setText(String text) {
+    public void setText(String text) throws PageNotValidException {
+        checkPageParameters(text);
+
         this.text = text;
     }
 
@@ -90,6 +95,10 @@ public class Page {
         choices.add(choice);
     }
 
+    /**
+     * Supprime le choix de la liste
+     * @param choice (Choice)
+     */
     public void removeChoice(Choice choice) {
         choices.remove(choice);
     }

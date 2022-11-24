@@ -1,5 +1,8 @@
 package org.helmo.gbeditor.presenters.interfaces.views;
 
+/**
+ * Interface mère des vue
+ */
 public interface ViewInterface {
 
     /**

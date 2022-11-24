@@ -15,6 +15,8 @@ import org.helmo.gbeditor.views.subviews.ChoicesGestionView;
 import org.helmo.gbeditor.views.subviews.CreateBookView;
 import org.helmo.gbeditor.views.subviews.PagesGestionView;
 
+import java.util.Optional;
+
 
 /**
  * Vue
@@ -48,7 +50,7 @@ public class MainView implements MainViewInterface {
         userInfoText.getStyleClass().add("user-info-text");
     }
 
-    private SubViewInterface subViews[] = new SubViewInterface[3];
+    private SubViewInterface[] subViews = new SubViewInterface[4];
 
     private StackPane viewStackPane = new StackPane();
     private BorderPane mainPane = new BorderPane();{
@@ -63,7 +65,6 @@ public class MainView implements MainViewInterface {
         this.presenter = presenter;
 
         presenter.setView(this);
-
 
         CreateBookView cbv = new CreateBookView(presenter);
         BookListView blv = new BookListView(presenter);
@@ -84,9 +85,8 @@ public class MainView implements MainViewInterface {
     /**
      * Met en place les informations sur la vue
      */
-    private void SetupView() {
-        String userInfos = presenter.getUserInfos();
-        userInfoText.setText("Auteur : " + userInfos);
+    private void SetupView(String authoInfos) {
+        userInfoText.setText("Auteur : " + authoInfos);
         //cbv.setAuthor(userInfos);
 
         switchPane(0);
@@ -119,8 +119,13 @@ public class MainView implements MainViewInterface {
     /**
      * Affiche la vue
      */
-    public void showView() {
-        SetupView();
+    @Override
+    public void showView(String authorInfos) {
+        for(SubViewInterface sv : subViews) {
+            sv.setPresenter();
+        }
+
+        SetupView(authorInfos);
         primaryStage.setScene(scene);
     }
 
@@ -147,6 +152,17 @@ public class MainView implements MainViewInterface {
         subViews[id].refresh();
     }
 
+    /**
+     * Affiche un popup de demande de confirmation de suppression de page
+     * @param text (String) texte du popup
+     */
+    @Override
+    public boolean confirmDialog(String text) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, text, ButtonType.CANCEL, ButtonType.APPLY);
+        Optional<ButtonType> result =  alert.showAndWait();
+
+        return result.get() == ButtonType.APPLY;
+    }
     /**
      * Affiche un message
      * @param msg (String) message

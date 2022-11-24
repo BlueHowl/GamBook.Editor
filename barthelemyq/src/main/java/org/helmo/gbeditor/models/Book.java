@@ -1,9 +1,6 @@
 package org.helmo.gbeditor.models;
 
-import org.helmo.gbeditor.models.exceptions.BookNotValidException;
-import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.models.exceptions.PageNotValidException;
-import org.helmo.gbeditor.models.utils.InputUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,55 +10,21 @@ import java.util.List;
  */
 public class Book {
 
-    private String title;
-
-    private String summary;
-
-    private final String author;
-
-    private Isbn isbn;
+    private Cover cover;
 
     private List<Page> pages;
 
+    private Page currentPage;
+
+    private boolean published;
+
     /**
      * Constructeur de la classe livre
-     * @param title (String) titre du livre
-     * @param summary (String) résumé du livre
-     * @param author (String) nom et prénom de l'auteur
-     * @param isbn (Isbn) numéro isbn unique du livre
-     * @throws BookNotValidException si les données du livre récupéré sont incorrectes
+     * @param cover (Cover) covuerture du livre
      */
-    public Book(String title, String summary, String author, Isbn isbn) throws BookNotValidException {
-        checkBookParameters(title, summary, author);
-
-        this.title = title.trim();
-        this.summary = summary.trim();
-        this.author = author;
-        this.isbn = isbn;
-    }
-
-    /**
-     * Vérifie les valeurs du livre
-     * @param title (String) titre
-     * @param summary (String) description
-     * @param author (String) nom et prenom de l'auteur
-     * @throws BookNotValidException si les données du livre récupéré sont incorrectes
-     */
-    private void checkBookParameters(String title, String summary, String author) throws BookNotValidException{
-        if(InputUtil.isEmptyOrBlank(title) ||
-                InputUtil.isEmptyOrBlank(summary) ||
-                InputUtil.isEmptyOrBlank(author))
-        {
-            throw new BookNotValidException("Tous les champs doivent être remplis");
-        }
-
-        if(!InputUtil.isInBound(title, 0, 150)) {
-            throw new BookNotValidException("Le titre ne peut pas faire plus que 150 caractères");
-        }
-
-        if(!InputUtil.isInBound(summary, 0, 500)) {
-            throw new BookNotValidException("La description ne peut pas faire plus que 500 caractères");
-        }
+    public Book(Cover cover, boolean published) {
+        this.cover = cover;
+        this.published = published;
     }
 
     /**
@@ -69,7 +32,7 @@ public class Book {
      * @return (String) titre
      */
     public String getTitle() {
-        return title;
+        return cover.getTitle();
     }
 
     /**
@@ -77,7 +40,7 @@ public class Book {
      * @return (String) résumé
      */
     public String getSummary() {
-        return summary;
+        return cover.getSummary();
     }
 
     /**
@@ -85,7 +48,7 @@ public class Book {
      * @return (String) nom et prénom de l'auteur
      */
     public String getAuthor() {
-        return author;
+        return cover.getAuthor();
     }
 
     /**
@@ -93,7 +56,7 @@ public class Book {
      * @return (String) numéro isbn du livre
      */
     public String getIsbn() {
-        return isbn.getIsbn();
+        return cover.getIsbn();
     }
 
     /**
@@ -117,6 +80,22 @@ public class Book {
     }
 
     /**
+     * Défini la page courante
+     * @param selectedPage (int)
+     */
+    public void setCurrentPage(int selectedPage) throws PageNotValidException {
+        currentPage = getPageByIndex(selectedPage);
+    }
+
+    /**
+     * Récupère la page courante
+     * @return (Page)
+     */
+    public Page getCurrentPage() {
+        return currentPage;
+    }
+
+    /**
      * Défini la liste des pages du livre
      * @param pages (List<Page>) liste de pags
      */
@@ -127,11 +106,11 @@ public class Book {
     /**
      * Ajoute une page à l'index donné
      * Assigne la premiere page si pas encore de pages
-     * @param index (int) index (numéro page - 1)
+     * @param index (int) index (numéro page)
      * @param page (Page)
      */
     public void setPageAtIndex(int index, Page page) {
-        if(pages.isEmpty()) {
+        if(pages.isEmpty() || index > pages.size()) {
             pages.add(page);
         } else {
             pages.add(index, page);
@@ -151,23 +130,47 @@ public class Book {
         }
     }
 
+    /**
+     * Supprime la page de la liste de pages
+     * @param page (Page)
+     */
     public void removePage(Page page) {
         pages.remove(page);
     }
 
     /**
-     * Modifie le livre
-     * @param title (String) titre
-     * @param summary (String) description
-     * @param isbn (String) numéro isbn
-     * @throws BookNotValidException
-     * @throws IsbnNotValidException
+     * Récupère les choix de toutes les pages du livre
+     * @return (List<Choice>) liste de choix
      */
-    public void modifyBook(String title, String summary, String isbn) throws BookNotValidException, IsbnNotValidException {
-        checkBookParameters(title, summary, this.getAuthor());
+    public List<Choice> getAllChoices() {
+        List<Choice> choices = new ArrayList<>();
+        for(Page page : getPages()) {
+            choices.addAll(page.getChoices());
+        }
 
-        this.isbn = new Isbn(isbn);
-        this.title = title.trim();
-        this.summary = summary.trim();
+        return choices;
+    }
+
+    /**
+     * Modifie le livre
+     * @param cover (Cover) nouvelle couverture
+     */
+    public void setCover(Cover cover) {
+        this.cover = cover;
+    }
+
+    /**
+     * Récupère la valeur de publication
+     * @return (boolean)
+     */
+    public boolean isPublished() {
+        return published;
+    }
+
+    /**
+     * Assigne la valeur true de publication
+     */
+    public void setToPublished() {
+        published = true;
     }
 }

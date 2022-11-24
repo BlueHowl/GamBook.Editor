@@ -3,14 +3,15 @@ package org.helmo.gbeditor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.helmo.gbeditor.models.Cover;
 import org.helmo.gbeditor.models.exceptions.BookNotValidException;
 import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.models.Book;
 import org.helmo.gbeditor.models.Isbn;
 import org.helmo.gbeditor.repositories.DataInterface;
-import org.helmo.gbeditor.infrastructures.JsonRepository;
-import org.helmo.gbeditor.repositories.exceptions.ElementNotFoundException;
-import org.helmo.gbeditor.repositories.exceptions.UnableToSaveException;
+import org.helmo.gbeditor.infrastructures.json.JsonRepository;
+import org.helmo.gbeditor.repositories.exceptions.NotRetrievedException;
+import org.helmo.gbeditor.repositories.exceptions.NotSavedException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,7 @@ public class JsonRepositoryTest {
     public void getBookCount0Test() {
         try {
             assertEquals(0, jsonRepository.getBookCount("test"));
-        } catch (ElementNotFoundException e) {
+        } catch (NotRetrievedException e) {
             assertEquals("Aucuns livres trouvés en sauvegarde, fichier créé", e.getMessage());
         }
     }
@@ -80,13 +81,13 @@ public class JsonRepositoryTest {
     @Test
     public void saveBookTest() {
         try {
-            Book book = new Book("titre", "description", "auteur", new Isbn("2-111111-04-x"));
+            Book book = new Book(new Cover("titre", "description", "auteur", new Isbn("2-111111-04-x")), false);
 
             jsonRepository.saveBook(book);
 
             assertEquals(1, jsonRepository.getBookCount("test"));
-        } catch (BookNotValidException | IsbnNotValidException | ElementNotFoundException ignored) {
-        } catch (UnableToSaveException e) {
+        } catch (BookNotValidException | IsbnNotValidException | NotRetrievedException ignored) {
+        } catch (NotSavedException e) {
             assertTrue(e.getMessage().equals("Impossible de sauvegarder les livres") || e.getMessage().equals("Aucuns livres trouvés en sauvegarde"));
         }
     }

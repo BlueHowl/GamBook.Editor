@@ -1,16 +1,15 @@
-package org.helmo.gbeditor.infrastructures;
+package org.helmo.gbeditor.infrastructures.json;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 import org.helmo.gbeditor.infrastructures.dto.BookDTO;
+import org.helmo.gbeditor.models.Author;
 import org.helmo.gbeditor.models.Book;
-import org.helmo.gbeditor.models.Isbn;
 import org.helmo.gbeditor.models.Page;
-import org.helmo.gbeditor.models.exceptions.IsbnNotValidException;
 import org.helmo.gbeditor.repositories.DataInterface;
-import org.helmo.gbeditor.repositories.exceptions.ElementNotFoundException;
-import org.helmo.gbeditor.repositories.exceptions.UnableToSaveException;
+import org.helmo.gbeditor.repositories.exceptions.NotRetrievedException;
+import org.helmo.gbeditor.repositories.exceptions.NotSavedException;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -24,7 +23,7 @@ import java.util.List;
  * Classe Repository Json
  * Gère la sauvegarde et la récupération des données sous format json
  */
-public class JsonRepository implements DataInterface {
+public class JsonRepository implements DataInterface, AutoCloseable {
 
     private final Gson gson = new Gson();
 
@@ -54,13 +53,23 @@ public class JsonRepository implements DataInterface {
         jsonBooksPath = Path.of(System.getProperty("user.home"), "ue36", id + ".json").toAbsolutePath().toString();
     }
 
+    @Override
+    public void setup() {
+
+    }
+
+    @Override
+    public void tearDown() {
+
+    }
+
     /**
      * Sauvegarde le livre donné en l'ajoutant aux autres
      * @param book (Book) Objet Livre
      * @throws IOException Impossible de sauvegarder les livres
      */
     @Override
-    public void saveBook(Book book) throws UnableToSaveException {
+    public void saveBook(Book book) throws NotSavedException {
         List<BookDTO> books;
         books = getAllBooks();
 
@@ -75,17 +84,27 @@ public class JsonRepository implements DataInterface {
     }
 
     @Override
-    public void savePages(List<Page> pages) {
+    public void updateBook(Book book) throws NotSavedException {
 
     }
 
     @Override
-    public List<Book> retrieveBooks(String authorId) throws ElementNotFoundException {
+    public void publishBook(Book book) throws NotSavedException {
+
+    }
+
+    @Override
+    public void saveChanges(Book book) throws NotSavedException {
+
+    }
+
+    @Override
+    public List<Book> retrieveBooks(String authorId) throws NotRetrievedException {
         return null;
     }
 
     @Override
-    public List<Page> getBookPages(String isbn) throws ElementNotFoundException, IsbnNotValidException {
+    public List<Page> getBookPages(Book book) throws NotRetrievedException {
         return null;
     }
 
@@ -94,15 +113,19 @@ public class JsonRepository implements DataInterface {
      * @return (int) nombre de livres
      */
     @Override
-    public int getBookCount(String authorId) throws ElementNotFoundException {
+    public int getBookCount(String authorCode) throws NotRetrievedException {
         List<BookDTO> books;
         books = getAllBooks();
 
-        if(books == null) { throw new ElementNotFoundException("Aucuns livres trouvés en sauvegarde, fichier créé"); }
+        if(books == null) { throw new NotRetrievedException("Aucuns livres trouvés en sauvegarde, fichier créé", null); }
 
         return books.size();
     }
 
+    @Override
+    public void connectAuthor(Author author) throws NotRetrievedException, NotSavedException {
+
+    }
 
     /**
      * Récupère tous les livres stockés
@@ -114,9 +137,7 @@ public class JsonRepository implements DataInterface {
         try(Reader reader = new BufferedReader(new FileReader(jsonBooksPath))) {
             Type BookDtoList = new TypeToken<ArrayList<BookDTO>>(){}.getType();
             books = gson.fromJson(reader, BookDtoList);
-        } catch (IOException e) {
-            //throw new IOException("Aucuns livres trouvés en sauvegarde, fichier créé");
-        }
+        } catch (IOException ignored) {}
 
         return books;
     }
@@ -126,11 +147,16 @@ public class JsonRepository implements DataInterface {
      * @param books (List<BookDTO>) Liste de tous les livres en Objet DTO
      * @throws IOException Impossible de sauvegarder les livres
      */
-    private void setAllBooks(List<BookDTO> books) throws UnableToSaveException {
+    private void setAllBooks(List<BookDTO> books) throws NotSavedException {
         try(FileWriter fw = new FileWriter(jsonBooksPath, StandardCharsets.UTF_8)) {
             gson.toJson(books, fw);
         } catch (JsonIOException | IOException e) {
-            throw new UnableToSaveException("Impossible de sauvegarder les livres");
+            throw new NotSavedException("Impossible de sauvegarder les livres", e);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

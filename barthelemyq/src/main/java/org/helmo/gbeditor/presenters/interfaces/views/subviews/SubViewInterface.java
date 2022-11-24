@@ -6,6 +6,11 @@ package org.helmo.gbeditor.presenters.interfaces.views.subviews;
 public interface SubViewInterface {
 
     /**
+     * Assigne le presentateur spécifique
+     */
+    void setPresenter();
+
+    /**
      * Initialise la sous-vue
      */
     void refresh();

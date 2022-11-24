@@ -11,13 +11,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.presenters.subpresenters.ChoiceGestionPInterface;
 import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 import org.helmo.gbeditor.presenters.viewmodels.ChoiceViewModel;
 
-//todo add to subviewinterface ?
+
 public class ChoicesGestionView extends HBox implements SubViewInterface {
 
-    private MainPresenterInterface presenter;
+    private final MainPresenterInterface presenter;
+    private ChoiceGestionPInterface choiceGestionPresenter;
 
     private TextField pageNumber = new TextField(); {
         pageNumber.setPrefWidth(60);
@@ -47,10 +49,12 @@ public class ChoicesGestionView extends HBox implements SubViewInterface {
         @Override
         public void updateItem(ChoiceViewModel item, boolean empty) {
             super.updateItem(item, empty);
-            if (item != null) {//limite titre 15 premiers caracteres
+            if (item != null || !empty) {//limite titre 15 premiers caracteres
                 Label title = new Label(item.getText().substring(0, Math.min(item.getText().length(), 25)) + "... -> " + item.getRefPageNumber());
 
                 setGraphic(title);
+            } else {
+                setGraphic(null);
             }
         }
     }
@@ -113,8 +117,7 @@ public class ChoicesGestionView extends HBox implements SubViewInterface {
     private VBox editPage = new VBox(); {
         BorderPane bottomPane = new BorderPane(); {
             Button btnModifyElement = new Button("Modifier le choix"); {
-                btnModifyElement.setOnAction(action -> presenter.modifyChoiceOfCurrentPage(choiceText.getText(), Integer.parseInt(pageNumber.getText()) - 1));
-                //TODO gerer exception parseint
+                btnModifyElement.setOnAction(action -> choiceGestionPresenter.modifyChoiceOfCurrentPage(choiceText.getText(), pageNumber.getText()));
             }
 
             bottomPane.setLeft(pageNumberBox);
@@ -139,14 +142,13 @@ public class ChoicesGestionView extends HBox implements SubViewInterface {
 
 
         Button btnAddElement = new Button(); {
-            btnAddElement.setOnAction(action -> presenter.addChoiceToCurrentPage(choiceText.getText(), Integer.parseInt(pageNumber.getText())));
-            //TODO gerer exception parseint
+            btnAddElement.setOnAction(action -> choiceGestionPresenter.addChoiceToCurrentPage(choiceText.getText(), pageNumber.getText()));
 
             btnAddElement.setGraphic(addElementUnderLogo);
         }
 
         Button btnDeleteElement = new Button(); {
-            //btnDeleteElement.setOnAction(action -> );
+            btnDeleteElement.setOnAction(action -> choiceGestionPresenter.removeCurrentChoice());
 
             btnDeleteElement.setGraphic(deleteElementLogo);
         }
@@ -162,12 +164,20 @@ public class ChoicesGestionView extends HBox implements SubViewInterface {
     }
 
     /**
+     * Assigne le presentateur spécifique
+     */
+    public void setPresenter() {
+        choiceGestionPresenter = (ChoiceGestionPInterface) presenter.getSubPresenters(3);
+    }
+
+    /**
      * Défini la liste de choix
      * affiche les choix de la page
      */
     @Override
     public void refresh() {
-        data.setAll(presenter.getPageChoices());
+        data.setAll(choiceGestionPresenter.getPageChoices());
+        list.refresh();
     }
 
     /**

@@ -7,38 +7,50 @@ import org.helmo.gbeditor.models.utils.InputUtil;
  * Classe auteur
  */
 public class Author {
-    private final String id;
+    private final String code;
     private final String surname;
     private final String name;
 
     /**
      * Constructeur de la classe auteur
-     * @param id (String) matricule de l'auteur
+     * @param code (String) matricule de l'auteur
      * @param surname (String) prénom de l'auteur
      * @param name (String) nom de l'auteur
+     * @throws AuthorNotValidException
      */
-    public Author(String id, String surname, String name) throws AuthorNotValidException{
-        if(InputUtil.isEmptyOrBlank(id) ||
-            InputUtil.isEmptyOrBlank(surname) ||
-            InputUtil.isEmptyOrBlank(name))
+    public Author(String code, String surname, String name) throws AuthorNotValidException{
+        checkAuthorParameters(code, surname, name);
+
+        this.code = code;
+        this.surname = surname.trim();
+        this.name = name.trim();
+    }
+
+    /**
+     * Vérifie les valeurs de l'auteur
+     * @param code (String) matricule de l'auteur
+     * @param surname (String) prénom de l'auteur
+     * @param name (String) nom de l'auteur
+     * @throws AuthorNotValidException
+     */
+    private void checkAuthorParameters(String code, String surname, String name) throws AuthorNotValidException {
+        if(InputUtil.isEmptyOrBlank(code) ||
+                InputUtil.isEmptyOrBlank(surname) ||
+                InputUtil.isEmptyOrBlank(name))
         {
             throw new AuthorNotValidException("Attention tout les champs doivent être remplis");
         }
 
-        if(!InputUtil.isInBound(id, 6, 6)) {
+        if(!InputUtil.isInBound(code, 6, 6)) {
             throw new AuthorNotValidException("Le matricule doit obligatoirement faire 6 chiffres !");
         }
-
-        this.id = id;
-        this.surname = surname.trim();
-        this.name = name.trim();
     }
 
     /**
      * Récupère l'id de l'auteur (matricule)
      * @return (String) id (matricule)
      */
-    public String getId() { return id; }
+    public String getCode() { return code; }
 
     /**
      * Récupère le prénom de l'auteur
@@ -51,4 +63,12 @@ public class Author {
      * @return (String) nom
      */
     public String getName() { return name; }
+
+    /**
+     * Récupère le nom et prénom de l'auteur
+     * @return (String) prenom nom
+     */
+    public String getAuthorInfos() {
+        return getSurname() + " " + getName();
+    }
 }

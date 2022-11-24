@@ -52,18 +52,21 @@ public class Isbn {
      * @return (int) résultat du calcul de vérification
      */
     public static String getIsbnVerification(String isbnStart) {
+        int sum = getIsbnSum(isbnStart.replace("-", "").toCharArray());
+        int code = 11 - sum % 11;
+
+        return (code >= 11 ? "-0" : (code >= 10 ? "-x" : String.format("-%d", code)));
+    }
+
+    private static int getIsbnSum(char[] sequence) {
         int sum = 0;
         int weight = 10;
-
-        char[] sequence = isbnStart.replace("-", "").toCharArray();
 
         for (char c : sequence) {
             sum += Character.getNumericValue(c) * weight--;
         }
 
-        int code = 11 - sum % 11;
-
-        return (code >= 11 ? "-0" : (code >= 10 ? "-x" : String.format("-%d", code)));
+        return sum;
     }
 
 }

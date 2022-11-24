@@ -3,7 +3,7 @@ package org.helmo.gbeditor.models.exceptions;
 /**
  * Exception livre invalide
  */
-public class BookNotValidException extends Exception{
+public class BookNotValidException extends Exception {
 
     /**
      *Remonte l'erreur donnée en paramètres

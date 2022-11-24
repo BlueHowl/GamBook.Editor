@@ -1,7 +1,6 @@
 package org.helmo.gbeditor.infrastructures.dto;
 
 import com.google.gson.annotations.SerializedName;
-import org.helmo.gbeditor.models.utils.InputUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,28 +12,19 @@ import java.util.List;
 public class PageDTO {
 
     @SerializedName("Text")
-    public String text;
+    public final String text;
 
     @SerializedName("Choices")
-    public List<ChoiceDTO> choices; //List ArrayList pour ajouter des elements au milieu
-
-    @SerializedName("BookIsbn")
-    public String bookIsbn;
+    public final List<ChoiceDTO> choices;
 
     /**
      * Constructeur de page dto
      * @param text (String) texte de la page
      * @param choices (List<ChoiceDTO>) liste de choix dto
-     * @param bookIsbn (String) id du livre qui contient la page
      */
-    public PageDTO(String text, Collection<ChoiceDTO> choices, String bookIsbn) {
-        if(InputUtil.isEmptyOrBlank(text)) {
-            //TODO throw error
-        }
-
+    public PageDTO(String text, Collection<ChoiceDTO> choices) {
         this.text = text;
         this.choices = (choices == null || choices.isEmpty()) ? new ArrayList<>() : new ArrayList<>(choices); //copie la liste
-        this.bookIsbn = bookIsbn;
     }
 
     /**
@@ -53,11 +43,4 @@ public class PageDTO {
         return choices;
     }
 
-    /**
-     * Récupère l'isbn du livre auquel appartient la page dto
-     * @return (String) isbn
-     */
-    public String getBookIsbn() {
-        return bookIsbn;
-    }
 }

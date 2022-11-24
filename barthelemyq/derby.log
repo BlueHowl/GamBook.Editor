@@ -1,12 +1,12 @@
 ----------------------------------------------------------------
-Fri Nov 11 12:02:43 CET 2022:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0184-665b-2fef-000007660bc0 
-on database directory C:\Users\ImJus\OneDrive\Bureau\bloc2\AI\GBEditorBarthelemyQ\barthelemyq\derbyTest with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@28d25987 
+Thu Nov 24 15:26:25 CET 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0184-aa08-5ce4-00000eedce70 
+on database directory C:\Users\ImJus\OneDrive\Bureau\bloc2\AI\GBEditorBarthelemyQ\barthelemyq\derbyTest with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@523884b2 
 Loaded from file:/C:/Users/ImJus/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.14.2.0/7efad40ef52fbb1f08142f07a83b42d29e47d8ce/derby-10.14.2.0.jar
-java.vendor=Amazon.com Inc.
-java.runtime.version=11.0.17+8-LTS
+java.vendor=AdoptOpenJDK
+java.runtime.version=11.0.11+9
 user.dir=C:\Users\ImJus\OneDrive\Bureau\bloc2\AI\GBEditorBarthelemyQ\barthelemyq
-os.name=Windows 11
+os.name=Windows 10
 os.arch=amd64
 os.version=10.0
 derby.system.home=null

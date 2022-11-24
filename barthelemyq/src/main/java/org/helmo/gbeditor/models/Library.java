@@ -9,11 +9,13 @@ public class Library {
 
     private List<Book> books;
 
+    private Book currentBook;
+
     /**
-     * Constructeur de la bibliothéque
-     * @param books (List<Book>) liste de livres
+     * Assigne les livres à la bibliothéque
+     * @param books (List<Book>)
      */
-    public Library(List<Book> books) {
+    public void setBooks(List<Book> books) {
         this.books = books;
     }
 
@@ -26,19 +28,42 @@ public class Library {
     }
 
     /**
-     * Récupère un livre sur base de l'index donné
-     * @param index (int)
-     * @return (Book) livre
-     */
-    public Book getBookByIndex(int index) {
-        return books.get(index);
-    }
-
-    /**
      * Ajoute un livre à la bibliothéque
      * @param book (Book) livre
      */
     public void addBook(Book book) {
         books.add(book);
+    }
+
+    /**
+     * Défini le livre courant
+     * @param selectedBook (int)
+     */
+    public void setCurrentBook(int selectedBook) {
+        currentBook = books.get(selectedBook);
+    }
+
+    /**
+     * Récupère le livre courant
+     * @return (Book) livre
+     */
+    public Book getCurrentBook() {
+        return currentBook;
+    }
+
+    /**
+     * Récupère la page courante
+     * @return (Page) page
+     */
+    public Page getCurrentPage() {
+        return currentBook.getCurrentPage();
+    }
+
+    /**
+     * Récupère le choix courant
+     * @return (Choice) choix
+     */
+    public Choice getCurrentChoice() {
+        return getCurrentPage().getCurrentChoice(); //todo demeter?
     }
 }

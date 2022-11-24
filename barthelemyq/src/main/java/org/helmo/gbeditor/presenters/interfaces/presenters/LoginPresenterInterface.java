@@ -2,6 +2,9 @@ package org.helmo.gbeditor.presenters.interfaces.presenters;
 
 import org.helmo.gbeditor.presenters.interfaces.views.ViewInterface;
 
+/**
+ * Interface du presentateur de connexion
+ */
 public interface LoginPresenterInterface {
 
     /**

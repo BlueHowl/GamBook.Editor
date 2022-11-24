@@ -6,12 +6,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.util.Callback;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.presenters.subpresenters.BookListPInterface;
 import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 import org.helmo.gbeditor.presenters.viewmodels.BookViewModel;
 
@@ -21,6 +20,8 @@ import org.helmo.gbeditor.presenters.viewmodels.BookViewModel;
 public class BookListView extends BorderPane implements SubViewInterface {
 
     private MainPresenterInterface presenter;
+
+    private BookListPInterface bookListPresenter;
 
     private BorderPane editableTitleBox = new BorderPane(); {
         Label title = new Label("Modifier le livre");
@@ -50,6 +51,7 @@ public class BookListView extends BorderPane implements SubViewInterface {
         editableBookTitleBox.getStyleClass().add("");
     }
 
+
     private Label editableIsbnVerif = new Label("");
     private TextField editableIsbn = new TextField(); {
         editableIsbn.setPrefWidth(90);
@@ -68,6 +70,8 @@ public class BookListView extends BorderPane implements SubViewInterface {
 
     }
 
+    //private Label isbnLabel = new Label();
+
     private BorderPane editableIsbnBox = new BorderPane(); {
         Label text = new Label("ISBN ");
 
@@ -77,6 +81,7 @@ public class BookListView extends BorderPane implements SubViewInterface {
 
         editableIsbnBox.setLeft(text);
         editableIsbnBox.setRight(field);
+        //editableIsbnBox.setRight(isbnLabel);
 
         editableIsbnBox.getStyleClass().add("");
     }
@@ -121,8 +126,14 @@ public class BookListView extends BorderPane implements SubViewInterface {
     }
 
     private HBox editableBtnBox = new HBox(); {
+        Button publishButton = new Button("Publier le livre"); {
+            publishButton.setOnAction(action -> bookListPresenter.publishBook());
+
+            publishButton.getStyleClass().add("");
+        }
+
         Button modifyButton = new Button("Modifier le livre"); {
-            modifyButton.setOnAction(action -> presenter.modifyCurrentBook(editableBookTitle.getText(), editableSummary.getText(), editableIsbn.getText() + editableIsbnVerif.getText()));
+            modifyButton.setOnAction(action -> bookListPresenter.modifyCurrentBook(editableBookTitle.getText(), editableSummary.getText(), editableIsbn.getText() + editableIsbnVerif.getText()));
 
             modifyButton.getStyleClass().add("");
         }
@@ -133,8 +144,7 @@ public class BookListView extends BorderPane implements SubViewInterface {
             gestionButton.getStyleClass().add("");
         }
 
-        editableBtnBox.getChildren().add(modifyButton);
-        editableBtnBox.getChildren().add(gestionButton);
+        editableBtnBox.getChildren().addAll(publishButton, modifyButton, gestionButton);
 
         editableBtnBox.getStyleClass().add("auth-box");
     }
@@ -148,17 +158,27 @@ public class BookListView extends BorderPane implements SubViewInterface {
         @Override
         public void updateItem(BookViewModel item, boolean empty) {
             super.updateItem(item, empty);
-            if (item != null) {//limite titre 15 premiers caracteres
+            if (item != null && !empty) {//limite titre 15 premiers caracteres
                 VBox box = new VBox(); {
                     String titleString = item.getTitle();
                     Label title = new Label("Titre : " + titleString.substring(0, Math.min(titleString.length(), 15)) + ((titleString.length() >= 15) ? "..." : ""));
-                    Label infos = new Label("Auteur : " + item.getAuthor() + ", Isbn : " + item.getIsbn());
 
-                    box.getChildren().add(title);
-                    box.getChildren().add(infos);
+                    HBox hBox = new HBox();
+                    Label infos = new Label("Auteur : " + item.getAuthor() + ", Isbn : " + item.getIsbn());
+                    ImageView deleteElementLogo = new ImageView(getClass().getResource("/images/published.png").toExternalForm()); {
+                        deleteElementLogo.setPreserveRatio(true);
+                        deleteElementLogo.setFitWidth(16);
+                        deleteElementLogo.setVisible(item.isPublished());
+                    }
+                    hBox.getChildren().addAll(infos, deleteElementLogo);
+
+                    box.getChildren().addAll(title, hBox);
+
                 }
 
                 setGraphic(box);
+            } else {
+                setGraphic(null);
             }
         }
     }
@@ -182,8 +202,15 @@ public class BookListView extends BorderPane implements SubViewInterface {
             @Override
             public void changed(ObservableValue<? extends BookViewModel> observable, BookViewModel oldValue, BookViewModel newValue) {
                 if(presenter != null && newValue != null) {
-                    setBookDetails(newValue);
-                    presenter.setCurrentBook(data.indexOf(newValue));
+                    if(newValue.isPublished()) {
+                        bookDescriptionPane.setVisible(false);
+                        published.setVisible(true);
+                    } else {
+                        published.setVisible(false);
+                        bookDescriptionPane.setVisible(true);
+                        setBookDetails(newValue);
+                        presenter.setCurrentBook(data.indexOf(newValue));
+                    }
                 }
             }
         });
@@ -203,6 +230,14 @@ public class BookListView extends BorderPane implements SubViewInterface {
         bookDescriptionPane.setAlignment(Pos.CENTER);
     }
 
+    private Label published = new Label("Livre publié");{
+        published.setVisible(false);
+    }
+
+    private StackPane mainPane = new StackPane();{
+        mainPane.getChildren().addAll(bookDescriptionPane, published);
+    }
+
     /**
      * Constructeur de la sous vue
      * @param presenter (MainPresenterInterface)
@@ -211,9 +246,16 @@ public class BookListView extends BorderPane implements SubViewInterface {
         this.presenter = presenter;
 
         this.setLeft(container);
-        this.setCenter(bookDescriptionPane);
+        this.setCenter(mainPane);
 
         this.setVisible(false);
+    }
+
+    /**
+     * Assigne le presentateur spécifique
+     */
+    public void setPresenter() {
+        this.bookListPresenter = (BookListPInterface) presenter.getSubPresenters(0);
     }
 
     /**
@@ -222,7 +264,7 @@ public class BookListView extends BorderPane implements SubViewInterface {
      */
     @Override
     public void refresh() {
-        data.setAll(presenter.getBooks());
+        data.setAll(bookListPresenter.getBooks());
     }
 
     /**
@@ -243,9 +285,12 @@ public class BookListView extends BorderPane implements SubViewInterface {
         editableSummary.setText(book.getSummary());
         editableAuthor.setText(book.getAuthor());
 
+        //isbnLabel.setText(book.getIsbn());
+
         String isbn = book.getIsbn();
         editableIsbn.setText(isbn.substring(0, isbn.length()-2));
         editableIsbnVerif.setText(isbn.substring(isbn.length()-2));
+
     }
 
 }

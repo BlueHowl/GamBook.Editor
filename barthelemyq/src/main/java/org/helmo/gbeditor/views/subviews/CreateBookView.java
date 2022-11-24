@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.presenters.subpresenters.CreateBookPInterface;
 import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 
 /**
@@ -17,6 +18,8 @@ import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 public class CreateBookView extends GridPane implements SubViewInterface {
 
     private MainPresenterInterface presenter;
+
+    private CreateBookPInterface createBookPresenter;
 
     private BorderPane titleBox = new BorderPane(); {
         Label title = new Label("Créer un livre");
@@ -115,7 +118,7 @@ public class CreateBookView extends GridPane implements SubViewInterface {
 
     private BorderPane createBtnBox = new BorderPane(); {
         Button createButton = new Button("Créer le livre"); {
-            createButton.setOnAction(action -> presenter.createBook(bookTitle.getText(), summary.getText(), author.getText(), isbn.getText() + isbnVerif.getText()));
+            createButton.setOnAction(action -> createBookPresenter.createBook(bookTitle.getText(), summary.getText(), author.getText(), isbn.getText() + isbnVerif.getText()));
 
             createButton.getStyleClass().add("");
         }
@@ -146,6 +149,13 @@ public class CreateBookView extends GridPane implements SubViewInterface {
     }
 
     /**
+     * Assigne le presentateur spécifique
+     */
+    public void setPresenter() {
+        createBookPresenter = (CreateBookPInterface) presenter.getSubPresenters(1);
+    }
+
+    /**
      * initialise les champs de la vue
      */
     @Override
@@ -153,9 +163,9 @@ public class CreateBookView extends GridPane implements SubViewInterface {
         bookTitle.clear();
         summary.clear();
 
-        this.author.setText(presenter.getUserInfos());
+        author.setText(presenter.getAuthorInfos());
 
-        String isbnNumber = presenter.generateIsbn();
+        String isbnNumber = createBookPresenter.generateIsbn();
         isbn.setText(isbnNumber.substring(0, isbnNumber.length()-2));
         isbnVerif.setText(isbnNumber.substring(isbnNumber.length()-2));
     }
@@ -169,15 +179,4 @@ public class CreateBookView extends GridPane implements SubViewInterface {
         this.setVisible(b);
     }
 
-    /*
-    /**
-     * initialise le champs auteur
-     * opération séparée car champs invariable
-     * @param author (String) nom et prénom de l'auteur
-     */
-    /*
-    public void setAuthor(String author) {
-        this.author.setText(author);
-    }
-    */
 }

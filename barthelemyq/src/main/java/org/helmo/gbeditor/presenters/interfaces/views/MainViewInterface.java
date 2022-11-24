@@ -1,7 +1,5 @@
 package org.helmo.gbeditor.presenters.interfaces.views;
 
-import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
-
 /**
  * Interface vue Principale
  * @author Quentin Barthélemy Q210043
@@ -11,8 +9,9 @@ public interface MainViewInterface extends ViewInterface{
 
     /**
      * Affiche la vue
+     * @param authorInfos (String) nom prenom de l'auteur
      */
-    void showView();
+    void showView(String authorInfos);
 
     /**
      * Change de menu dans la vue principale
@@ -25,5 +24,11 @@ public interface MainViewInterface extends ViewInterface{
      * @param id (int)
      */
     void refreshSubView(int id);
+
+    /**
+     * Affiche un popup de demande de confirmation de suppression de page
+     * @param text (String) texte du popup
+     */
+    boolean confirmDialog(String text);
 
 }

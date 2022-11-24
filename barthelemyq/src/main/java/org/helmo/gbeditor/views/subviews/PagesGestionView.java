@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.helmo.gbeditor.presenters.interfaces.presenters.MainPresenterInterface;
+import org.helmo.gbeditor.presenters.interfaces.presenters.subpresenters.PageGestionPInterface;
 import org.helmo.gbeditor.presenters.interfaces.views.subviews.SubViewInterface;
 import org.helmo.gbeditor.presenters.viewmodels.PageViewModel;
 
@@ -18,7 +19,8 @@ import java.util.List;
 
 public class PagesGestionView extends HBox implements SubViewInterface {
 
-    private MainPresenterInterface presenter;
+    private final MainPresenterInterface presenter;
+    private PageGestionPInterface pageGestionPresenter;
 
     private TextField pageNumber = new TextField(); {
         pageNumber.setPrefWidth(60);
@@ -48,10 +50,12 @@ public class PagesGestionView extends HBox implements SubViewInterface {
         @Override
         public void updateItem(PageViewModel item, boolean empty) {
             super.updateItem(item, empty);
-            if (item != null) {//limite titre 15 premiers caracteres
+            if (item != null && !empty) {//limite titre 15 premiers caracteres
                 Label title = new Label(item.getPageNumber() + ". Résumé : " + item.getText().substring(0, Math.min(item.getText().length(), 30)) + "...");
 
                 setGraphic(title);
+            } else {
+                setGraphic(null);
             }
         }
     }
@@ -75,7 +79,7 @@ public class PagesGestionView extends HBox implements SubViewInterface {
                     @Override
                     public void changed(ObservableValue<? extends PageViewModel> observable, PageViewModel oldValue, PageViewModel newValue) {
                         if(presenter != null && newValue != null) {
-                            int index = data.indexOf(newValue); //TODO update currentPage au lieu de la page a l'index
+                            int index = data.indexOf(newValue);
                             presenter.setCurrentPage(index);
                             setPageDetails(newValue, index);
 
@@ -117,16 +121,31 @@ public class PagesGestionView extends HBox implements SubViewInterface {
 
     private VBox editPage = new VBox(); {
         BorderPane bottomPane = new BorderPane(); {
-            Button btnModifyElement = new Button("Modifier la page"); {
-                btnModifyElement.setOnAction(action -> presenter.modifyPageOfCurrentBook(Integer.parseInt(pageNumber.getText()) - 1, pageText.getText()));
-                //TODO gerer exception parseint
+            HBox hBtnBox = new HBox();
+
+            Button btnAddElement = new Button("Ajouter la page"); {
+                btnAddElement.setOnAction(action -> pageGestionPresenter.addPageToCurrentBook(pageNumber.getText(), pageText.getText(), -1));
             }
 
+            Button btnModifyElement = new Button("Modifier la page"); {
+                btnModifyElement.setOnAction(action -> pageGestionPresenter.modifyPageOfCurrentBook(pageNumber.getText(), pageText.getText()));
+            }
+
+            hBtnBox.getChildren().addAll(btnAddElement, btnModifyElement);
+
             bottomPane.setLeft(pageNumberBox);
-            bottomPane.setRight(btnModifyElement);
+            bottomPane.setRight(hBtnBox);
         }
 
         editPage.getChildren().addAll(pageTextBox, bottomPane);
+    }
+
+    private VBox editPageSection = new VBox(); {
+        Button btnSavePages = new Button("Sauvegarder les pages"); {
+            btnSavePages.setOnAction(action -> pageGestionPresenter.saveBookPages());
+        }
+
+        editPageSection.getChildren().addAll(editPage, btnSavePages);
     }
 
     //toolBar
@@ -144,14 +163,13 @@ public class PagesGestionView extends HBox implements SubViewInterface {
 
 
         Button btnAddElementUnder = new Button(); {
-            btnAddElementUnder.setOnAction(action -> presenter.addPageToCurrentBook(Integer.parseInt(pageNumber.getText()), pageText.getText()));
-            //TODO gerer exception parseint
+            btnAddElementUnder.setOnAction(action -> pageGestionPresenter.addPageToCurrentBook(pageNumber.getText(), pageText.getText(), 0));
 
             btnAddElementUnder.setGraphic(addElementUnderLogo);
         }
 
         Button btnDeleteElement = new Button(); {
-            //btnDeleteElement.setOnAction(action -> );
+            btnDeleteElement.setOnAction(action -> pageGestionPresenter.safeRemoveCurrentPage());
 
             btnDeleteElement.setGraphic(deleteElementLogo);
         }
@@ -169,9 +187,16 @@ public class PagesGestionView extends HBox implements SubViewInterface {
 
         editPage.getChildren().add(this.cgv = cgv);
 
-        this.getChildren().addAll(container, toolBar, editPage);
+        this.getChildren().addAll(container, toolBar, editPageSection);
 
         this.setVisible(false);
+    }
+
+    /**
+     * Assigne le presentateur spécifique
+     */
+    public void setPresenter() {
+        pageGestionPresenter = (PageGestionPInterface) presenter.getSubPresenters(2);
     }
 
     /**
@@ -180,9 +205,11 @@ public class PagesGestionView extends HBox implements SubViewInterface {
      */
     @Override
     public void refresh() {
-        List<PageViewModel> pageViewModelList = presenter.getBookPages();
+        List<PageViewModel> pageViewModelList = pageGestionPresenter.getBookPages();
 
         data.setAll(pageViewModelList);
+        list.refresh();
+
         setPageDetails(new PageViewModel("", 1), pageViewModelList.size()); //affiche de base une page vide avec le numéro de la prochaine page
     }
 
