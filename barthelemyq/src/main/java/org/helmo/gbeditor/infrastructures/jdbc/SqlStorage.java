@@ -34,36 +34,6 @@ public class SqlStorage implements DataInterface, AutoCloseable {
     }
 
     /**
-     * Mets en place les tables de la bd (pour les tests)
-     */
-    @Override
-    public void setup() {
-        try (Statement createStatement = connection.createStatement()) {
-            createStatement.executeUpdate(CREATE_AUTHOR_TABLE_STMT);
-            createStatement.executeUpdate(CREATE_BOOK_TABLE_STMT);
-            createStatement.executeUpdate(CREATE_PAGE_TABLE_STMT);
-            createStatement.executeUpdate(CREATE_CHOICE_TABLE_STMT);
-        } catch (SQLException e) {
-            throw new UnableToSetupException(e);
-        }
-    }
-
-    /**
-     * Détruit les tables de la bd (pour les tests)
-     */
-    @Override
-    public void tearDown() {
-        try (Statement createStatement = connection.createStatement()) {
-            createStatement.executeUpdate("DROP TABLE CHOICE");
-            createStatement.executeUpdate("DROP TABLE PAGE");
-            createStatement.executeUpdate("DROP TABLE BOOK");
-            createStatement.executeUpdate("DROP TABLE AUTHOR");
-        } catch (SQLException e) {
-            throw new UnableToTearDownException(e);
-        }
-    }
-
-    /**
      * Sauvegarde le livre donné
      * @param book (Book) Livre à sauvegarder
      * @throws NotSavedException lorsque le livre n'a pas pû être sauvé

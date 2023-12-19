@@ -53,16 +53,6 @@ public class JsonRepository implements DataInterface, AutoCloseable {
         jsonBooksPath = Path.of(System.getProperty("user.home"), "ue36", id + ".json").toAbsolutePath().toString();
     }
 
-    @Override
-    public void setup() {
-
-    }
-
-    @Override
-    public void tearDown() {
-
-    }
-
     /**
      * Sauvegarde le livre donné en l'ajoutant aux autres
      * @param book (Book) Objet Livre

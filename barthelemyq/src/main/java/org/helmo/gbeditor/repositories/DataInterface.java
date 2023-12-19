@@ -18,16 +18,6 @@ import java.util.List;
 public interface DataInterface extends AutoCloseable{
 
     /**
-     * Initialise le stockage
-     */
-    void setup();
-
-    /**
-     * Nettoie le stockage
-     */
-    void tearDown();
-
-    /**
      * Sauvegarde un livre
      * @param book (Book) Livre à sauvegarder
      * @throws NotSavedException

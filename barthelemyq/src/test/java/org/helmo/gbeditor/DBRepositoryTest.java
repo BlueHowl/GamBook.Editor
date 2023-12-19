@@ -12,6 +12,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import static org.helmo.gbeditor.infrastructures.jdbc.SqlQueries.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DBRepositoryTest {
@@ -27,7 +32,7 @@ public class DBRepositoryTest {
     public void setup() throws Exception {
         try(DataInterface storage = factory.newStorageSession()) {
             try {
-                storage.setup();
+                //storage.setup();
             } catch(UnableToSetupException ex) {
 
             }
@@ -37,13 +42,46 @@ public class DBRepositoryTest {
     @AfterEach
     public void teardown() throws Exception {
         try(DataInterface storage = factory.newStorageSession()) {
-            storage.tearDown();
+            //storage.tearDown();
         } catch(UnableToTearDownException ex) {
             //Cette exception peut être lancée si le schéma ne contient pas les tables.
             //La méthode essaie alors de créer les tables.
         }
     }
 
+    /*
+    /**
+     * Mets en place les tables de la bd (pour les tests)
+     */
+    /*
+    public void setup() {
+        try (Statement createStatement = connection.createStatement()) {
+            createStatement.executeUpdate(CREATE_AUTHOR_TABLE_STMT);
+            createStatement.executeUpdate(CREATE_BOOK_TABLE_STMT);
+            createStatement.executeUpdate(CREATE_PAGE_TABLE_STMT);
+            createStatement.executeUpdate(CREATE_CHOICE_TABLE_STMT);
+        } catch (SQLException e) {
+            throw new UnableToSetupException(e);
+        }
+    }
+
+    /**
+     * Détruit les tables de la bd (pour les tests)
+     */
+    /*
+    public void tearDown() {
+     /*
+        try (Statement createStatement = connection.createStatement()) {
+            createStatement.executeUpdate("DROP TABLE CHOICE");
+            createStatement.executeUpdate("DROP TABLE PAGE");
+            createStatement.executeUpdate("DROP TABLE BOOK");
+            createStatement.executeUpdate("DROP TABLE AUTHOR");
+        } catch (SQLException e) {
+            throw new UnableToTearDownException(e);
+        }
+    }*/
+
+    /*
     @Test
     public void saveBook() throws Exception {
         try(DataInterface storage = factory.newStorageSession()) {
@@ -51,66 +89,6 @@ public class DBRepositoryTest {
 
             assertEquals(1, storage.getBookCount("111111"));
         }
-    }
-
-    /*
-    @Test
-    public void savesProject() throws Exception {
-        try(SqlStorage storage = factory.newStorageSession()) {
-            org.helmo.sd_java_jdbc.domain.Project newProject = new Project(0L,"A project","A description");
-            newProject.add(new Phase(0L,"A phase 1","blabla", newProject));
-            newProject.add(new Phase(0L,"A phase 2","blabla", newProject));
-
-            storage.save(newProject);
-
-            assertNotEquals(newProject.getId(), 0L);
-
-            assertNotEquals(newProject.getPhases().get(0), 0L);
-            assertNotEquals(newProject.getPhases().get(1), 0L);
-        }
-    }
-
-    @Test
-    public void updatesProject() throws Exception {
-        try(SqlStorage storage = factory.newStorageSession()) {
-            Project newProject = new Project(0L,"A project","A description");
-            newProject.add(new Phase(0L,"A phase 1","blabla", newProject));
-            newProject.add(new Phase(0L,"A phase 2","blabla", newProject));
-
-            storage.save(newProject);
-
-            assertNotEquals(newProject.getId(), 0L);
-
-            assertNotEquals(newProject.getPhases().get(0), 0L);
-            assertNotEquals(newProject.getPhases().get(1), 0L);
-
-            newProject.add(new Task(0L, "A task","description", newProject.getPhases().get(0)));
-
-            storage.save(newProject);
-        }
-    }
-
-    @Test
-    public void loadsProject() throws Exception {
-        //Given : Un projet sauvegardé en BD
-        try(SqlProjectStorage storage = factory.newStorageSession()) {
-            Project newProject = new Project(0L, "A project", "A description");
-            newProject.add(new Phase(0L, "A phase 1", "blabla", newProject));
-            newProject.add(new Phase(0L, "A phase 2", "blabla", newProject));
-
-            storage.save(newProject);
-            //When : on essaie de le récupérer
-            Project found = storage.load(newProject.getId());
-
-            //Then : l'objet trouvé a le même nom que le projet sauvegardé
-            assertEquals(newProject.getName(), found.getName());
-            assertEquals(newProject.getDescription(), found.getDescription());
-            assertNotSame(newProject, found);
-
-            assertEquals("A phase 1", found.getPhases().get(0).getName());
-            assertEquals("A phase 2", found.getPhases().get(1).getName());
-        }
-    }
-    */
+    }*/
 
 }

@@ -22,9 +22,9 @@ public class App extends Application {
      */
     private static final StorageFactoryInterface FACTORY = new SqlStorageFactory(
             "com.mysql.cj.jdbc.Driver",
-            "jdbc:mySQL://192.168.128.13:3306/in21b10043",
-            "in21b10043",
-            "0043"
+            "jdbc:mySQL://IP:PORT",
+            "USERNAME",
+            "PASSWORD"
     );
 
     /**

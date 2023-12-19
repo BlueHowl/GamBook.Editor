@@ -87,7 +87,6 @@ public class MainView implements MainViewInterface {
      */
     private void SetupView(String authoInfos) {
         userInfoText.setText("Auteur : " + authoInfos);
-        //cbv.setAuthor(userInfos);
 
         switchPane(0);
     }
